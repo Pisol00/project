@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการตารางเรียนตารางสอน</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/login.css">
+    <link rel="stylesheet" href="./css/dashboard.css">
+    <link rel="stylesheet" href="./css/animations.css">
+</head>
+
+<body class="min-h-screen relative overflow-x-hidden">
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="page active login-background min-h-screen">
+        <!-- Floating Background Shapes -->
+        <div class="floating-shape shape-circle w-16 h-16 top-20 left-10 float-gentle"></div>
+        <div class="floating-shape shape-circle w-12 h-12 top-1/3 right-20 float-gentle" style="animation-delay: -5s;"></div>
+        <div class="floating-shape shape-circle w-10 h-10 bottom-1/4 left-1/4 float-gentle" style="animation-delay: -10s;"></div>
+        <div class="floating-shape shape-circle w-14 h-14 bottom-20 right-10 float-gentle" style="animation-delay: -15s;"></div>
+
+        <!-- Main Container -->
+        <main class="flex items-center justify-center min-h-screen p-4 sm:p-6">
+            <div class="w-full max-w-md relative z-10">
+                <!-- Login Card -->
+                <section class="glass-card rounded-3xl p-8 sm:p-10 w-full fade-in-up">
+                    <!-- Header Section -->
+                    <header class="text-center mb-8">
+                        <!-- Logo -->
+                        <div class="inline-flex items-center justify-center w-32 h-32 sm:w-36 sm:h-36 mb-6 logo-pulse">
+                            <img 
+                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_wx9ytkWpaORplO5wMqeYtEtP23Wb3bSigw&s" 
+                                alt="IT Department Logo" 
+                                class="w-full h-full object-contain rounded-2xl"
+                            />
+                        </div>
+                        
+                        <!-- Title -->
+                        <hgroup>
+                            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 tracking-tight">
+                                ยินดีต้อนรับ
+                            </h1>
+                            <p class="text-gray-600 leading-relaxed text-base sm:text-lg">
+                                เข้าสู่ระบบเพื่อจัดการตารางเรียนตารางสอน
+                            </p>
+                    </header>
+                    
+                    <!-- Login Form -->
+                    <div class="mb-8">
+                        <button 
+                            type="button"
+                            id="loginButton"
+                            class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 border-2 border-gray-200 rounded-xl py-4 px-6 text-gray-800 font-medium login-button group transition-all duration-300"
+                            aria-label="เข้าสู่ระบบด้วย Google"
+                        >
+                            <!-- Loading Spinner (Hidden by default) -->
+                            <div id="loadingSpinner" class="spinner hidden"></div>
+                            
+                            <!-- Success Checkmark (Hidden by default) -->
+                            <svg id="successCheck" class="success-checkmark hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                                <circle class="checkmark-circle" fill="none" cx="26" cy="26" r="25"/>
+                                <path class="checkmark-check" fill="none" d="m16 25 6 6 12-12"/>
+                            </svg>
+                            
+                            <!-- Google Icon -->
+                            <svg id="googleIcon" class="w-5 h-5 icon-bounce transition-transform duration-200" viewBox="0 0 24 24" aria-hidden="true">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                            <span id="buttonText" class="text-base sm:text-lg">เข้าสู่ระบบด้วย Google</span>
+                        </button>
+                        
+                        <!-- Enhanced Error Message -->
+                        <div id="errorMessage" class="hidden mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <div class="flex items-center">
+                                <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                </svg>
+                                <p class="text-sm text-red-600">เกิดข้อผิดพลาดในการเข้าสู่ระบบ กรุณาลองใหม่อีกครั้ง</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <footer class="text-center">
+                        <nav class="text-xs text-gray-400">
+                            <ul class="flex items-center justify-center space-x-4 mb-4">
+                                <li>
+                                    <a href="#" class="hover:text-blue-600 transition-colors duration-300 hover:underline">
+                                        นโยบายการใช้งานองค์กร
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="w-1 h-1 bg-gray-400 rounded-full" aria-hidden="true"></div>
+                                </li>
+                                <li>
+                                    <a href="#" class="hover:text-blue-600 transition-colors duration-300 hover:underline">
+                                        คู่มือการใช้งาน
+                                    </a>
+                                </li>
+                            </ul>
+                            <p class="text-gray-400">
+                                © 2025 IT Department. สงวนลิขสิทธิ์
+                            </p>
+                        </nav>
+                    </footer>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- LOADING PAGE -->
+    <div id="loadingPage" class="page hidden loading-background min-h-screen">
+        <!-- Subtle Background Elements -->
+        <div class="minimal-particle"></div>
+        <div class="minimal-particle"></div>
+        <div class="minimal-particle"></div>
+
+        <!-- Loading Content -->
+        <div class="loading-content">
+            <!-- Skeleton Preview of Dashboard -->
+            <div class="skeleton-preview">
+                <!-- Header -->
+                <div class="skeleton-header">
+                    <div class="skeleton-logo"></div>
+                    <div class="skeleton-title-group">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-subtitle"></div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="skeleton-stats">
+                    <div class="skeleton-stat-card">
+                        <div class="skeleton-stat-number"></div>
+                        <div class="skeleton-stat-label"></div>
+                    </div>
+                    <div class="skeleton-stat-card">
+                        <div class="skeleton-stat-number"></div>
+                        <div class="skeleton-stat-label"></div>
+                    </div>
+                    <div class="skeleton-stat-card">
+                        <div class="skeleton-stat-number"></div>
+                        <div class="skeleton-stat-label"></div>
+                    </div>
+                    <div class="skeleton-stat-card">
+                        <div class="skeleton-stat-number"></div>
+                        <div class="skeleton-stat-label"></div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="skeleton-content">
+                    <div class="skeleton-main">
+                        <div class="skeleton-item">
+                            <div class="skeleton-item-icon"></div>
+                            <div class="skeleton-item-content">
+                                <div class="skeleton-item-title"></div>
+                                <div class="skeleton-item-subtitle"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="skeleton-item-icon"></div>
+                            <div class="skeleton-item-content">
+                                <div class="skeleton-item-title"></div>
+                                <div class="skeleton-item-subtitle"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="skeleton-item-icon"></div>
+                            <div class="skeleton-item-content">
+                                <div class="skeleton-item-title"></div>
+                                <div class="skeleton-item-subtitle"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="skeleton-item-icon"></div>
+                            <div class="skeleton-item-content">
+                                <div class="skeleton-item-title"></div>
+                                <div class="skeleton-item-subtitle"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skeleton-sidebar">
+                        <div class="skeleton-widget">
+                            <div class="skeleton-widget-title"></div>
+                            <div class="skeleton-widget-content">
+                                <div class="skeleton-widget-item"></div>
+                                <div class="skeleton-widget-item"></div>
+                                <div class="skeleton-widget-item"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-widget">
+                            <div class="skeleton-widget-title"></div>
+                            <div class="skeleton-widget-content">
+                                <div class="skeleton-widget-item"></div>
+                                <div class="skeleton-widget-item"></div>
+                                <div class="skeleton-widget-item"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Info -->
+        <div class="skeleton-loading-info">
+            <div class="skeleton-spinner"></div>
+            <p id="loadingStatus" class="skeleton-loading-text">กำลังโหลดข้อมูล...</p>
+        </div>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div id="dashboardPage" class="page hidden dashboard-background min-h-screen">
+        <!-- Floating Background Shapes -->
+        <div class="floating-shape shape-circle w-12 h-12 top-20 left-10 float-gentle"></div>
+        <div class="floating-shape shape-circle w-8 h-8 top-1/3 right-20 float-gentle" style="animation-delay: -8s;"></div>
+        <div class="floating-shape shape-circle w-10 h-10 bottom-1/4 left-1/4 float-gentle" style="animation-delay: -15s;"></div>
+
+        <!-- Header -->
+        <header class="glass-header sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <!-- Logo & Title -->
+                    <div class="flex items-center space-x-4">
+                        <button id="mobileMenuBtn" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                        <div class="flex items-center space-x-3">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_wx9ytkWpaORplO5wMqeYtEtP23Wb3bSigw&s" 
+                                 alt="Logo" class="w-10 h-10 rounded-lg">
+                            <div class="hidden sm:block">
+                                <h1 class="text-xl font-bold text-gray-900">ระบบจัดการตาราง</h1>
+                                <p class="text-sm text-gray-600">IT Department</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Menu -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Notifications -->
+                        <button class="p-2 rounded-lg hover:bg-gray-100 relative">
+                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M15 17h5l-5-5V9.5a3.5 3.5 0 00-7 0V12l-5 5h5m0 0v1a3 3 0 006 0v-1m-6 0h6"></path>
+                            </svg>
+                            <span class="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+                        </button>
+
+                        <!-- User Profile -->
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                                <span class="text-white text-sm font-medium">U</span>
+                            </div>
+                            <div class="hidden sm:block">
+                                <p class="text-sm font-medium text-gray-900">ผู้ใช้งาน</p>
+                                <p class="text-xs text-gray-500">user@example.com</p>
+                            </div>
+                            <button id="userMenuBtn" class="p-1 rounded-lg hover:bg-gray-100">
+                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Dropdown Menu -->
+            <div id="userDropdown" class="hidden absolute right-4 top-16 w-48 glass-card rounded-xl py-2 z-50">
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">โปรไฟล์</a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">การตั้งค่า</a>
+                <hr class="my-2">
+                <button onclick="logout()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                    ออกจากระบบ
+                </button>
+            </div>
+        </header>
+
+        <div class="flex">
+            <!-- Sidebar -->
+            <aside id="sidebar" class="mobile-menu md:relative fixed inset-y-0 left-0 z-40 w-64 glass-card md:glass-card border-r">
+                <nav class="mt-8 px-4">
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#" class="nav-item active flex items-center space-x-3 px-4 py-3 rounded-lg">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4l2 2 4-4"></path>
+                                </svg>
+                                <span class="font-medium">ภาพรวม</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4l2 2 4-4"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
+                                </svg>
+                                <span class="font-medium">ตารางเรียน</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                                <span class="font-medium">ตารางสอน</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                <span class="font-medium">นักเรียน</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                </svg>
+                                <span class="font-medium">ครูผู้สอน</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-item flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                                <span class="font-medium">รายงาน</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-4 md:p-8 relative z-10">
+                <!-- Welcome Section -->
+                <section class="mb-8 fade-in">
+                    <div class="glass-card rounded-2xl p-6 bg-gradient-to-r from-blue-50 to-indigo-50">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-900 mb-2">ยินดีต้อนรับกลับ! 👋</h2>
+                                <p class="text-gray-600">วันนี้คุณมีกิจกรรมและตารางที่ต้องดูแล</p>
+                            </div>
+                            <div class="hidden md:block">
+                                <div class="text-right">
+                                    <p class="text-sm text-gray-500">วันที่</p>
+                                    <p class="text-lg font-semibold text-gray-900" id="currentDate"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Stats Cards -->
+                <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="glass-card rounded-2xl p-6 interactive-card slide-in">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1">ตารางเรียนวันนี้</p>
+                                <p class="text-2xl font-bold text-gray-900">8</p>
+                                <p class="text-xs text-green-600 mt-1">+2 จากเมื่อวาน</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 4l2 2 4-4"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 interactive-card slide-in" style="animation-delay: 0.1s;">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1">ครูที่สอน</p>
+                                <p class="text-2xl font-bold text-gray-900">24</p>
+                                <p class="text-xs text-green-600 mt-1">+3 คนใหม่</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 interactive-card slide-in" style="animation-delay: 0.2s;">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1">นักเรียนทั้งหมด</p>
+                                <p class="text-2xl font-bold text-gray-900">1,247</p>
+                                <p class="text-xs text-blue-600 mt-1">98% เข้าเรียน</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-2xl p-6 interactive-card slide-in" style="animation-delay: 0.3s;">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 mb-1">ห้องเรียน</p>
+                                <p class="text-2xl font-bold text-gray-900">32</p>
+                                <p class="text-xs text-orange-600 mt-1">2 ห้องปิดซ่อม</p>
+                            </div>
+                            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Main Content Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Schedule Today -->
+                    <div class="lg:col-span-2">
+                        <div class="glass-card rounded-2xl p-6 fade-in">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-gray-900">ตารางเรียนวันนี้</h3>
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">ดูทั้งหมด</button>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-center space-x-4 p-4 bg-blue-50 rounded-xl">
+                                    <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">
+                                        08:00
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-gray-900">คณิตศาสตร์ ม.3/1</h4>
+                                        <p class="text-sm text-gray-600">ห้อง A301 • ครูสมชาย</p>
+                                    </div>
+                                    <span class="status-badge status-active">กำลังเรียน</span>
+                                </div>
+
+                                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl">
+                                    <div class="w-12 h-12 bg-gray-400 rounded-lg flex items-center justify-center text-white font-bold">
+                                        09:50
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-gray-900">ฟิสิกส์ ม.6/2</h4>
+                                        <p class="text-sm text-gray-600">ห้อง B205 • ครูสมหญิง</p>
+                                    </div>
+                                    <span class="status-badge status-pending">รอเริ่ม</span>
+                                </div>
+
+                                <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl">
+                                    <div class="w-12 h-12 bg-gray-400 rounded-lg flex items-center justify-center text-white font-bold">
+                                        13:00
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="font-medium text-gray-900">เคมี ม.5/1</h4>
+                                        <p class="text-sm text-gray-600">ห้อง C102 • ครูสมศักดิ์</p>
+                                    </div>
+                                    <span class="status-badge status-pending">รอเริ่ม</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions & Stats -->
+                    <div class="space-y-6">
+                        <!-- Quick Actions -->
+                        <div class="glass-card rounded-2xl p-6 fade-in">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">เมนูด่วน</h3>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button class="p-4 bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors duration-200">
+                                    <svg class="w-6 h-6 text-blue-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                    <p class="text-xs text-gray-700 font-medium">เพิ่มตาราง</p>
+                                </button>
+                                
+                                <button class="p-4 bg-green-50 hover:bg-green-100 rounded-xl transition-colors duration-200">
+                                    <svg class="w-6 h-6 text-green-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    <p class="text-xs text-gray-700 font-medium">สร้างรายงาน</p>
+                                </button>
+                                
+                                <button class="p-4 bg-purple-50 hover:bg-purple-100 rounded-xl transition-colors duration-200">
+                                    <svg class="w-6 h-6 text-purple-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                    <p class="text-xs text-gray-700 font-medium">จัดการครู</p>
+                                </button>
+                                
+                                <button class="p-4 bg-orange-50 hover:bg-orange-100 rounded-xl transition-colors duration-200">
+                                    <svg class="w-6 h-6 text-orange-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    <p class="text-xs text-gray-700 font-medium">ตั้งค่า</p>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Progress Widget -->
+                        <div class="glass-card rounded-2xl p-6 fade-in">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">ความคืบหน้าสัปดาห์นี้</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-600">ตารางเรียนที่สมบูรณ์</span>
+                                        <span class="font-medium">85%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-600">อัตราการเข้าเรียน</span>
+                                        <span class="font-medium">92%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 92%"></div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between text-sm mb-2">
+                                        <span class="text-gray-600">ครูที่พร้อมสอน</span>
+                                        <span class="font-medium">78%</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobileOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"></div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="./js/utils.js"></script>
+    <script src="./js/auth.js"></script>
+    <script src="./js/dashboard.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+</html>

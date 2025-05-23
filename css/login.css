@@ -1,0 +1,462 @@
+/* Login Page Styles - login.css */
+
+.login-background {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.login-button {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.1),
+        0 6px 10px rgba(0, 0, 0, 0.08);
+    border-color: rgba(66, 133, 244, 0.3);
+}
+
+.login-button:active {
+    transform: translateY(0);
+    transition: all 0.1s;
+}
+
+.login-button:focus-visible {
+    outline: 2px solid #4285f4;
+    outline-offset: 2px;
+}
+
+.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #4285f4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Success Checkmark Animation */
+.success-checkmark {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    stroke-width: 3;
+    stroke: #4ade80;
+    stroke-miterlimit: 10;
+    box-shadow: inset 0px 0px 0px #4ade80;
+    animation: fill 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+    position: relative;
+}
+
+.checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 3;
+    stroke-miterlimit: 10;
+    stroke: #4ade80;
+    fill: #fff;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+    100% { stroke-dashoffset: 0; }
+}
+
+@keyframes scale {
+    0%, 100% { transform: none; }
+    50% { transform: scale3d(1.1, 1.1, 1); }
+}
+
+@keyframes fill {
+    100% { box-shadow: inset 0px 0px 0px 30px #4ade80; }
+}
+
+/* Logo Animation */
+.logo-pulse {
+    animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+.icon-bounce:hover {
+    animation: bounce 0.6s ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Popular Skeleton UI Loading */
+.loading-background {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    position: relative;
+    z-index: 10;
+    padding: 2rem;
+}
+
+/* Skeleton Preview Layout */
+.skeleton-preview {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 
+        0 20px 25px rgba(0, 0, 0, 0.1),
+        0 10px 10px rgba(0, 0, 0, 0.04);
+}
+
+/* Skeleton Header */
+.skeleton-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.skeleton-logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+}
+
+.skeleton-title-group {
+    flex: 1;
+}
+
+.skeleton-title {
+    height: 28px;
+    width: 200px;
+    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.skeleton-subtitle {
+    height: 16px;
+    width: 150px;
+    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite 0.2s;
+    border-radius: 4px;
+}
+
+/* Skeleton Stats Grid */
+.skeleton-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.skeleton-stat-card {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #f3f4f6;
+}
+
+.skeleton-stat-number {
+    height: 32px;
+    width: 80px;
+    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.skeleton-stat-label {
+    height: 16px;
+    width: 120px;
+    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite 0.3s;
+    border-radius: 4px;
+}
+
+/* Skeleton Content */
+.skeleton-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+.skeleton-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.skeleton-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f9fafb;
+    border-radius: 12px;
+    border: 1px solid #f3f4f6;
+}
+
+.skeleton-item-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+}
+
+.skeleton-item-content {
+    flex: 1;
+}
+
+.skeleton-item-title {
+    height: 20px;
+    width: 60%;
+    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.skeleton-item-subtitle {
+    height: 16px;
+    width: 40%;
+    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite 0.1s;
+    border-radius: 4px;
+}
+
+/* Skeleton Sidebar */
+.skeleton-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.skeleton-widget {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #f3f4f6;
+}
+
+.skeleton-widget-title {
+    height: 20px;
+    width: 80%;
+    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.skeleton-widget-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.skeleton-widget-item {
+    height: 16px;
+    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    border-radius: 4px;
+}
+
+.skeleton-widget-item:nth-child(1) { width: 90%; animation-delay: 0s; }
+.skeleton-widget-item:nth-child(2) { width: 70%; animation-delay: 0.1s; }
+.skeleton-widget-item:nth-child(3) { width: 85%; animation-delay: 0.2s; }
+
+/* Shimmer Animation */
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Loading Progress */
+.skeleton-loading-info {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    padding: 1rem 2rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 100;
+}
+
+.skeleton-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f4f6;
+    border-top: 2px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.skeleton-loading-text {
+    color: #374151;
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Floating Particles */
+.minimal-particle {
+    position: absolute;
+    background: linear-gradient(45deg, rgba(59, 130, 246, 0.03), rgba(99, 102, 241, 0.02));
+    border-radius: 50%;
+    pointer-events: none;
+    animation: elegantFloat 15s ease-in-out infinite;
+}
+
+.minimal-particle:nth-child(1) { 
+    width: 200px; 
+    height: 200px; 
+    top: 10%; 
+    right: 10%; 
+    animation-delay: 0s; 
+}
+
+.minimal-particle:nth-child(2) { 
+    width: 150px; 
+    height: 150px; 
+    bottom: 20%; 
+    left: 15%; 
+    animation-delay: -5s; 
+}
+
+.minimal-particle:nth-child(3) { 
+    width: 100px; 
+    height: 100px; 
+    top: 60%; 
+    right: 20%; 
+    animation-delay: -10s; 
+}
+
+@keyframes elegantFloat {
+    0%, 100% { 
+        transform: translateY(0px) translateX(0px); 
+        opacity: 0.3;
+    }
+    50% { 
+        transform: translateY(-20px) translateX(10px); 
+        opacity: 0.6;
+    }
+}
+
+/* Progressive Loading States */
+.skeleton-item.loaded {
+    animation: fadeToReal 0.8s ease-out forwards;
+}
+
+@keyframes fadeToReal {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(0.98);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .skeleton-preview {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .skeleton-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .skeleton-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .skeleton-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .skeleton-title {
+        width: 100%;
+    }
+    
+    .skeleton-subtitle {
+        width: 80%;
+    }
+}
+
+/* Advanced shimmer for different elements */
+.skeleton-logo { animation-delay: 0s; }
+.skeleton-title { animation-delay: 0.1s; }
+.skeleton-subtitle { animation-delay: 0.2s; }
+.skeleton-stat-card:nth-child(1) .skeleton-stat-number { animation-delay: 0.3s; }
+.skeleton-stat-card:nth-child(2) .skeleton-stat-number { animation-delay: 0.4s; }
+.skeleton-stat-card:nth-child(3) .skeleton-stat-number { animation-delay: 0.5s; }
+.skeleton-stat-card:nth-child(4) .skeleton-stat-number { animation-delay: 0.6s; }
