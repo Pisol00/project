@@ -88,14 +88,14 @@ class ScheduleManagementApp {
         if (typeof AuthManager !== 'undefined') {
             AuthManager.init();
             console.log('✅ AuthManager initialized');
+        } else {
+            console.warn('AuthManager not found');
         }
 
-        // Initialize dashboard (will be called when needed)
-        if (typeof DashboardManager !== 'undefined') {
-            console.log('✅ DashboardManager ready');
-        }
+        // Initialize utilities
+        console.log('✅ Utilities ready');
 
-        // Initialize other modules here
+        // Other modules can be initialized here
         // await this.initializeOtherModules();
     }
 
@@ -139,10 +139,16 @@ class ScheduleManagementApp {
             this.closeAllModals();
         }
 
-        // Alt + D - Go to dashboard (if authenticated)
-        if (e.altKey && e.key === 'd' && AuthManager.isAuthenticated()) {
+        // Alt + L - Go to login page
+        if (e.altKey && e.key === 'l') {
             e.preventDefault();
-            showPage('dashboardPage');
+            showPage('loginPage');
+        }
+
+        // Alt + S - Go to success page (if authenticated)
+        if (e.altKey && e.key === 's' && typeof AuthManager !== 'undefined' && AuthManager.isAuthenticated()) {
+            e.preventDefault();
+            showPage('successPage');
         }
     }
 
@@ -150,15 +156,6 @@ class ScheduleManagementApp {
      * Handle window resize
      */
     handleWindowResize() {
-        // Close mobile menu on resize to desktop
-        if (window.innerWidth >= 768) {
-            const sidebar = document.getElementById('sidebar');
-            const mobileOverlay = document.getElementById('mobileOverlay');
-            
-            if (sidebar) sidebar.classList.remove('open');
-            if (mobileOverlay) mobileOverlay.classList.add('hidden');
-        }
-
         // Adjust layout if needed
         this.adjustLayoutForScreenSize();
     }
@@ -169,10 +166,10 @@ class ScheduleManagementApp {
     handleVisibilityChange() {
         if (document.hidden) {
             // Page is hidden - pause unnecessary processes
-            this.pauseRealTimeUpdates();
+            console.log('Page hidden - pausing processes');
         } else {
             // Page is visible - resume processes
-            this.resumeRealTimeUpdates();
+            console.log('Page visible - resuming processes');
         }
     }
 
@@ -265,11 +262,16 @@ class ScheduleManagementApp {
      * Check authentication state
      */
     checkAuthenticationState() {
-        const currentUser = AuthManager.getCurrentUser();
-        
-        if (currentUser) {
-            console.log('User already authenticated:', currentUser.name);
-            // Could auto-navigate to dashboard or show appropriate page
+        if (typeof AuthManager !== 'undefined') {
+            const currentUser = AuthManager.getCurrentUser();
+            
+            if (currentUser) {
+                console.log('User already authenticated:', currentUser.name);
+                // Could auto-navigate to success page
+                showPage('successPage');
+            }
+        } else {
+            console.warn('AuthManager not available for authentication check');
         }
     }
 
@@ -285,21 +287,14 @@ class ScheduleManagementApp {
      * Close all modals and dropdowns
      */
     closeAllModals() {
-        // Close user dropdown
-        const userDropdown = document.getElementById('userDropdown');
-        if (userDropdown) {
-            userDropdown.classList.add('hidden');
-        }
-
-        // Close mobile menu
-        const sidebar = document.getElementById('sidebar');
-        const mobileOverlay = document.getElementById('mobileOverlay');
-        if (sidebar) sidebar.classList.remove('open');
-        if (mobileOverlay) mobileOverlay.classList.add('hidden');
-
-        // Close any other modals
+        // Close any modals
         document.querySelectorAll('.modal').forEach(modal => {
             modal.classList.add('hidden');
+        });
+
+        // Close dropdowns
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+            dropdown.classList.add('hidden');
         });
     }
 
@@ -313,24 +308,6 @@ class ScheduleManagementApp {
         // Add/remove classes based on screen size
         document.body.classList.toggle('mobile', isMobile);
         document.body.classList.toggle('tablet', isTablet);
-    }
-
-    /**
-     * Pause real-time updates
-     */
-    pauseRealTimeUpdates() {
-        if (window.DashboardManager && typeof window.DashboardManager.pauseUpdates === 'function') {
-            window.DashboardManager.pauseUpdates();
-        }
-    }
-
-    /**
-     * Resume real-time updates
-     */
-    resumeRealTimeUpdates() {
-        if (window.DashboardManager && typeof window.DashboardManager.resumeUpdates === 'function') {
-            window.DashboardManager.resumeUpdates();
-        }
     }
 
     /**

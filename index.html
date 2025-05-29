@@ -14,8 +14,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="stylesheet" href="./css/login.css">
-    <link rel="stylesheet" href="./css/dashboard.css">
-    <link rel="stylesheet" href="./css/animations.css">
+    <link rel="stylesheet" href="./css/animation.css">
 </head>
 
 <body class="min-h-screen relative overflow-x-hidden">
@@ -135,7 +134,7 @@
 
         <!-- Loading Content -->
         <div class="loading-content">
-            <!-- Skeleton Preview of Dashboard -->
+            <!-- Skeleton Preview of Future System -->
             <div class="skeleton-preview">
                 <!-- Header -->
                 <div class="skeleton-header">
@@ -232,10 +231,34 @@
         </div>
     </div>
 
+    <!-- SUCCESS PAGE -->
+    <div id="successPage" class="page hidden min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center">
+        <div class="text-center">
+            <div class="w-32 h-32 mx-auto mb-8 bg-green-100 rounded-full flex items-center justify-center">
+                <svg class="w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">เข้าสู่ระบบสำเร็จ!</h1>
+            <p class="text-gray-600 mb-8">ยินดีต้อนรับเข้าสู่ระบบจัดการตารางเรียนตารางสอน</p>
+            <div class="space-y-4">
+                <button onclick="showNotification('ระบบพร้อมใช้งานแล้ว!', 'success')" 
+                        class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-medium transition-colors">
+                    เริ่มใช้งาน
+                </button>
+                <div>
+                    <button onclick="logout()" 
+                            class="text-gray-500 hover:text-gray-700 px-4 py-2 rounded transition-colors">
+                        ออกจากระบบ
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript Files -->
     <script src="./js/utils.js"></script>
     <script src="./js/auth.js"></script>
-    <script src="./js/dashboard.js"></script>
     <script src="./js/main.js"></script>
 </body>
 

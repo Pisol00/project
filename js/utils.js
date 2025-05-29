@@ -1,275 +1,300 @@
-// Utility Functions - utils.js
+// Authentication Functions - auth.js
 
 /**
- * Page Navigation Functions
+ * Authentication Manager
  */
-function showPage(pageId) {
-    // Hide all pages
-    document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-        page.classList.add('hidden');
-    });
-    
-    // Show selected page
-    const targetPage = document.getElementById(pageId);
-    if (targetPage) {
-        targetPage.classList.remove('hidden');
-        setTimeout(() => {
-            targetPage.classList.add('active');
-        }, 50);
-    }
-}
+const AuthManager = {
+    currentUser: null,
 
-/**
- * Format Date in Thai Format
- */
-function formatThaiDate(date = new Date()) {
-    return date.toLocaleDateString('th-TH', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-}
+    /**
+     * Initialize authentication
+     */
+    init() {
+        this.currentUser = LocalStorage.get('currentUser');
+        this.setupEventListeners();
+    },
 
-/**
- * Show/Hide Element with Animation
- */
-function toggleElement(elementId, show = null) {
-    const element = document.getElementById(elementId);
-    if (!element) return;
-    
-    if (show === null) {
-        show = element.classList.contains('hidden');
-    }
-    
-    if (show) {
-        element.classList.remove('hidden');
-        element.classList.add('scale-in');
-    } else {
-        element.classList.add('hidden');
-        element.classList.remove('scale-in');
-    }
-}
+    /**
+     * Setup event listeners for authentication
+     */
+    setupEventListeners() {
+        safeAddEventListener('loginButton', 'click', () => this.handleLogin());
 
-/**
- * Add Event Listener with Error Handling
- */
-function safeAddEventListener(elementId, event, callback) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.addEventListener(event, callback);
-    } else {
-        console.warn(`Element with ID '${elementId}' not found`);
-    }
-}
-
-/**
- * Show Notification/Toast
- */
-function showNotification(message, type = 'info', duration = 3000) {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 ${getNotificationClass(type)}`;
-    notification.textContent = message;
-    
-    // Add to page
-    document.body.appendChild(notification);
-    
-    // Animate in
-    setTimeout(() => {
-        notification.classList.add('translate-x-0', 'opacity-100');
-    }, 10);
-    
-    // Auto remove
-    setTimeout(() => {
-        notification.classList.add('translate-x-full', 'opacity-0');
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
+        // Enhanced Accessibility - Enter key support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.id === 'loginButton') {
+                this.handleLogin();
             }
-        }, 300);
-    }, duration);
-}
-
-function getNotificationClass(type) {
-    switch (type) {
-        case 'success':
-            return 'bg-green-500 text-white';
-        case 'error':
-            return 'bg-red-500 text-white';
-        case 'warning':
-            return 'bg-yellow-500 text-white';
-        default:
-            return 'bg-blue-500 text-white';
-    }
-}
-
-/**
- * Local Storage Helpers
- */
-const LocalStorage = {
-    set(key, value) {
-        try {
-            localStorage.setItem(key, JSON.stringify(value));
-        } catch (error) {
-            console.error('Error saving to localStorage:', error);
-        }
-    },
-    
-    get(key, defaultValue = null) {
-        try {
-            const item = localStorage.getItem(key);
-            return item ? JSON.parse(item) : defaultValue;
-        } catch (error) {
-            console.error('Error reading from localStorage:', error);
-            return defaultValue;
-        }
-    },
-    
-    remove(key) {
-        try {
-            localStorage.removeItem(key);
-        } catch (error) {
-            console.error('Error removing from localStorage:', error);
-        }
-    }
-};
-
-/**
- * Debounce Function
- */
-function debounce(func, wait, immediate) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            timeout = null;
-            if (!immediate) func(...args);
-        };
-        const callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func(...args);
-    };
-}
-
-/**
- * Check if element is in viewport
- */
-function isInViewport(element) {
-    const rect = element.getBoundingClientRect();
-    return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-}
-
-/**
- * Smooth scroll to element
- */
-function scrollToElement(elementId, offset = 0) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        const targetPosition = element.offsetTop - offset;
-        window.scrollTo({
-            top: targetPosition,
-            behavior: 'smooth'
         });
-    }
-}
-
-/**
- * Generate unique ID
- */
-function generateId(prefix = 'id') {
-    return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-}
-
-/**
- * Format time to Thai format
- */
-function formatTime(time) {
-    if (typeof time === 'string') {
-        return time;
-    }
-    
-    const date = new Date(time);
-    return date.toLocaleTimeString('th-TH', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-}
-
-/**
- * Validate email format
- */
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
-
-/**
- * Enhanced Loading Animation Manager
- */
-const LoadingManager = {
-    /**
-     * Show loading with custom configuration
-     */
-    show(config = {}) {
-        const defaultConfig = {
-            title: 'กำลังโหลด',
-            steps: [
-                { text: 'กำลังเตรียมข้อมูล', progress: 20 },
-                { text: 'กำลังประมวลผล', progress: 60 },
-                { text: 'เกือบเสร็จแล้ว', progress: 90 },
-                { text: 'เสร็จสิ้น', progress: 100 }
-            ],
-            duration: 3000
-        };
-        
-        const finalConfig = { ...defaultConfig, ...config };
-        
-        // Implementation here
-        console.log('Loading with config:', finalConfig);
     },
-    
+
     /**
-     * Update loading progress
+     * Handle login process
      */
-    updateProgress(progress, text = '') {
-        const progressBar = document.getElementById('loadingProgressBar');
-        const statusText = document.getElementById('loadingStatus');
-        
-        if (progressBar) {
-            progressBar.style.width = `${progress}%`;
-            
-            // Add special effect at 100%
-            if (progress >= 100) {
-                progressBar.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.8)';
+    async handleLogin() {
+        const button = document.getElementById('loginButton');
+        const buttonText = document.getElementById('buttonText');
+        const googleIcon = document.getElementById('googleIcon');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const successCheck = document.getElementById('successCheck');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Reset UI state
+        this.resetLoginUI();
+
+        // Start loading state
+        this.setLoadingState(true);
+
+        try {
+            // Simulate login API call
+            const result = await this.simulateLogin();
+
+            if (result.success) {
+                // Success state
+                this.setSuccessState();
+
+                // Save user data
+                this.currentUser = result.user;
+                LocalStorage.set('currentUser', this.currentUser);
+
+                // Show loading screen and then success page
+                setTimeout(() => {
+                    this.showLoadingScreen();
+                }, 1000);
+            } else {
+                throw new Error(result.message || 'Login failed');
             }
-        }
-        
-        if (statusText && text) {
-            statusText.style.opacity = '0';
-            setTimeout(() => {
-                statusText.textContent = text;
-                statusText.style.opacity = '0.8';
-            }, 150);
+
+        } catch (error) {
+            console.error('Login error:', error);
+            this.setErrorState(error.message);
         }
     },
-    
+
     /**
-     * Hide loading
+     * Simulate login API call
      */
-    hide() {
-        const loadingPage = document.getElementById('loadingPage');
-        if (loadingPage) {
-            loadingPage.classList.add('fade-out');
-            setTimeout(() => {
-                loadingPage.classList.add('hidden');
-                loadingPage.classList.remove('fade-out');
-            }, 300);
+    async simulateLogin() {
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Simulate random success/failure for demo
+        const success = Math.random() > 0.1; // 90% success rate
+
+        if (success) {
+            return {
+                success: true,
+                user: {
+                    id: 'user_123',
+                    name: 'ผู้ใช้งาน',
+                    email: 'user@example.com',
+                    role: 'admin',
+                    avatar: null
+                }
+            };
+        } else {
+            return {
+                success: false,
+                message: 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ'
+            };
         }
+    },
+
+    /**
+     * Reset login UI to initial state
+     */
+    resetLoginUI() {
+        const errorMessage = document.getElementById('errorMessage');
+        if (errorMessage) {
+            errorMessage.classList.add('hidden');
+        }
+    },
+
+    /**
+     * Set loading state
+     */
+    setLoadingState(loading = true) {
+        const button = document.getElementById('loginButton');
+        const buttonText = document.getElementById('buttonText');
+        const googleIcon = document.getElementById('googleIcon');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        if (loading) {
+            button.classList.add('loading');
+            buttonText.textContent = 'กำลังเข้าสู่ระบบ...';
+            googleIcon.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+        } else {
+            button.classList.remove('loading');
+            buttonText.textContent = 'เข้าสู่ระบบด้วย Google';
+            googleIcon.classList.remove('hidden');
+            loadingSpinner.classList.add('hidden');
+        }
+    },
+
+    /**
+     * Set success state
+     */
+    setSuccessState() {
+        const buttonText = document.getElementById('buttonText');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const successCheck = document.getElementById('successCheck');
+
+        loadingSpinner.classList.add('hidden');
+        successCheck.classList.remove('hidden');
+        buttonText.textContent = 'เข้าสู่ระบบสำเร็จ';
+    },
+
+    /**
+     * Set error state
+     */
+    setErrorState(message) {
+        const button = document.getElementById('loginButton');
+        const buttonText = document.getElementById('buttonText');
+        const googleIcon = document.getElementById('googleIcon');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Reset button state
+        this.setLoadingState(false);
+
+        // Show error message
+        if (errorMessage) {
+            const errorText = errorMessage.querySelector('p');
+            if (errorText) {
+                errorText.textContent = message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ กรุณาลองใหม่อีกครั้ง';
+            }
+            errorMessage.classList.remove('hidden');
+
+            // Auto hide error after 5 seconds
+            setTimeout(() => {
+                errorMessage.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Add shake animation to button
+        button.classList.add('shake');
+        setTimeout(() => {
+            button.classList.remove('shake');
+        }, 500);
+    },
+
+    /**
+     * Show skeleton loading screen
+     */
+    async showLoadingScreen() {
+        showPage('loadingPage');
+
+        const loadingStatus = document.getElementById('loadingStatus');
+
+        const loadingSteps = [
+            { text: 'กำลังเริ่มต้นระบบ...', delay: 800 },
+            { text: 'ตรวจสอบสิทธิ์การเข้าใช้...', delay: 700 },
+            { text: 'เตรียมโปรไฟล์ของคุณ...', delay: 600 },
+            { text: 'โหลดข้อมูลระบบ...', delay: 500 },
+            { text: 'เตรียมข้อมูลการใช้งาน...', delay: 400 },
+            { text: 'กำลังดำเนินการให้เสร็จสิ้น...', delay: 300 },
+            { text: 'พร้อมใช้งานแล้ว!', delay: 200 }
+        ];
+
+        // Add progressive loading effect to skeleton items
+        const skeletonItems = document.querySelectorAll('.skeleton-item');
+        const skeletonWidgets = document.querySelectorAll('.skeleton-widget');
+
+        // Animate skeleton items loading
+        setTimeout(() => {
+            skeletonItems.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add('loaded');
+                }, index * 200);
+            });
+        }, 2000);
+
+        // Animate skeleton widgets loading
+        setTimeout(() => {
+            skeletonWidgets.forEach((widget, index) => {
+                setTimeout(() => {
+                    widget.classList.add('loaded');
+                }, index * 300);
+            });
+        }, 2500);
+
+        for (const step of loadingSteps) {
+            await new Promise(resolve => {
+                setTimeout(() => {
+                    if (loadingStatus) {
+                        loadingStatus.textContent = step.text;
+
+                        // Special styling for completion
+                        if (step.text === 'พร้อมใช้งานแล้ว!') {
+                            loadingStatus.style.color = '#059669';
+                            loadingStatus.style.fontWeight = '600';
+                        }
+                    }
+                    resolve();
+                }, step.delay);
+            });
+        }
+
+        // Go to success page with smooth transition
+        setTimeout(() => {
+            showPage('successPage');
+            showNotification('เข้าสู่ระบบสำเร็จ!', 'success');
+        }, 500);
+    },
+
+    /**
+     * Logout function
+     */
+    logout() {
+        if (confirm('คุณต้องการออกจากระบบหรือไม่?')) {
+            // Clear user data
+            this.currentUser = null;
+            LocalStorage.remove('currentUser');
+
+            // Reset login button state
+            this.resetLoginButton();
+
+            // Go back to login page
+            showPage('loginPage');
+
+            showNotification('ออกจากระบบสำเร็จ', 'success');
+        }
+    },
+
+    /**
+     * Reset login button to initial state
+     */
+    resetLoginButton() {
+        const button = document.getElementById('loginButton');
+        const buttonText = document.getElementById('buttonText');
+        const googleIcon = document.getElementById('googleIcon');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const successCheck = document.getElementById('successCheck');
+
+        if (button) button.classList.remove('loading');
+        if (buttonText) buttonText.textContent = 'เข้าสู่ระบบด้วย Google';
+        if (googleIcon) googleIcon.classList.remove('hidden');
+        if (loadingSpinner) loadingSpinner.classList.add('hidden');
+        if (successCheck) successCheck.classList.add('hidden');
+    },
+
+    /**
+     * Check if user is authenticated
+     */
+    isAuthenticated() {
+        return this.currentUser !== null;
+    },
+
+    /**
+     * Get current user
+     */
+    getCurrentUser() {
+        return this.currentUser;
     }
 };
+
+// Global logout function for compatibility
+function logout() {
+    AuthManager.logout();
+}

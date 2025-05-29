@@ -57,7 +57,7 @@ const AuthManager = {
                 this.currentUser = result.user;
                 LocalStorage.set('currentUser', this.currentUser);
 
-                // Show loading screen and then dashboard
+                // Show loading screen and then success page
                 setTimeout(() => {
                     this.showLoadingScreen();
                 }, 1000);
@@ -180,7 +180,7 @@ const AuthManager = {
     },
 
     /**
-     * Show skeleton loading screen (most popular loading pattern)
+     * Show skeleton loading screen
      */
     async showLoadingScreen() {
         showPage('loadingPage');
@@ -191,10 +191,10 @@ const AuthManager = {
             { text: 'กำลังเริ่มต้นระบบ...', delay: 800 },
             { text: 'ตรวจสอบสิทธิ์การเข้าใช้...', delay: 700 },
             { text: 'เตรียมโปรไฟล์ของคุณ...', delay: 600 },
-            { text: 'โหลดข้อมูลตารางเรียน...', delay: 500 },
-            { text: 'เตรียมข้อมูลโรงเรียน...', delay: 400 },
+            { text: 'โหลดข้อมูลระบบ...', delay: 500 },
+            { text: 'เตรียมข้อมูลการใช้งาน...', delay: 400 },
             { text: 'กำลังดำเนินการให้เสร็จสิ้น...', delay: 300 },
-            { text: 'พร้อมใช้งานแล้ว', delay: 200 }
+            { text: 'พร้อมใช้งานแล้ว!', delay: 200 }
         ];
 
         // Add progressive loading effect to skeleton items
@@ -226,7 +226,7 @@ const AuthManager = {
                         loadingStatus.textContent = step.text;
 
                         // Special styling for completion
-                        if (step.text === 'เสร็จสิ้น!') {
+                        if (step.text === 'พร้อมใช้งานแล้ว!') {
                             loadingStatus.style.color = '#059669';
                             loadingStatus.style.fontWeight = '600';
                         }
@@ -236,12 +236,10 @@ const AuthManager = {
             });
         }
 
-        // Go to dashboard with smooth transition
+        // Go to success page with smooth transition
         setTimeout(() => {
-            showPage('dashboardPage');
-            if (window.DashboardManager) {
-                window.DashboardManager.init();
-            }
+            showPage('successPage');
+            showNotification('เข้าสู่ระบบสำเร็จ!', 'success');
         }, 500);
     },
 
@@ -298,5 +296,9 @@ const AuthManager = {
 
 // Global logout function for compatibility
 function logout() {
-    AuthManager.logout();
+    if (typeof AuthManager !== 'undefined') {
+        AuthManager.logout();
+    } else {
+        console.error('AuthManager not available');
+    }
 }

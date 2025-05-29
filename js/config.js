@@ -39,29 +39,6 @@ const Config = {
                 logout: '/auth/logout',
                 refresh: '/auth/refresh',
                 profile: '/auth/profile'
-            },
-            schedule: {
-                list: '/schedules',
-                create: '/schedules',
-                update: '/schedules/:id',
-                delete: '/schedules/:id',
-                today: '/schedules/today'
-            },
-            teachers: {
-                list: '/teachers',
-                create: '/teachers',
-                update: '/teachers/:id',
-                delete: '/teachers/:id'
-            },
-            students: {
-                list: '/students',
-                create: '/students',
-                update: '/students/:id',
-                delete: '/students/:id'
-            },
-            reports: {
-                generate: '/reports/:type',
-                download: '/reports/:id/download'
             }
         }
     },
@@ -85,19 +62,12 @@ const Config = {
             position: 'top-right',
             duration: 3000,
             maxVisible: 5
-        },
-        pagination: {
-            defaultPageSize: 20,
-            pageSizeOptions: [10, 20, 50, 100]
         }
     },
 
     // Feature Flags
     features: {
-        enableAdvancedSearch: true,
-        enableRealtimeUpdates: true,
         enableNotifications: true,
-        enableDataExport: true,
         enableDarkMode: true,
         enableOfflineMode: false, // Future feature
         enablePWA: false // Future feature
@@ -143,7 +113,6 @@ const Config = {
         ttl: {
             default: 300000, // 5 minutes
             user: 3600000, // 1 hour
-            schedule: 60000, // 1 minute
             static: 86400000 // 24 hours
         }
     },
@@ -167,11 +136,6 @@ const Config = {
         },
         email: {
             pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        },
-        schedule: {
-            maxDuration: 480, // 8 hours in minutes
-            minDuration: 30, // 30 minutes
-            timeSlots: ['08:00', '08:50', '09:50', '10:40', '13:00', '13:50', '14:40', '15:30']
         }
     },
 
