@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เข้าสู่ระบบ - ระบบจัดการตารางเรียนตารางสอน</title>
+    <title>ระบบจัดการตารางเรียนตารางสอน</title>
 
     <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,6 +14,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="./css/styles.css">
     <link rel="stylesheet" href="./css/login.css">
+    <link rel="stylesheet" href="./css/dashboard.css">
     <link rel="stylesheet" href="./css/animations.css">
 </head>
 
@@ -56,7 +57,7 @@
                     <div class="mb-8">
                         <button type="button" id="loginButton"
                             class="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-50 border-2 border-gray-200 rounded-xl py-4 px-6 text-gray-800 font-medium login-button group transition-all duration-300"
-                            aria-label="เข้าสู่ระบบด้วย Google" onclick="handleLogin()">
+                            aria-label="เข้าสู่ระบบด้วย Google">
                             <!-- Loading Spinner (Hidden by default) -->
                             <div id="loadingSpinner" class="spinner hidden"></div>
 
@@ -93,16 +94,6 @@
                                 <p class="text-sm text-red-600">เกิดข้อผิดพลาดในการเข้าสู่ระบบ กรุณาลองใหม่อีกครั้ง</p>
                             </div>
                         </div>
-
-                        <!-- Success Message -->
-                        <div id="successMessage" class="hidden mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <p class="text-sm text-green-600">เข้าสู่ระบบสำเร็จ! กำลังนำทางไปยังหน้าหลัก...</p>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Footer -->
@@ -135,82 +126,117 @@
         </main>
     </div>
 
+    <!-- LOADING PAGE -->
+    <div id="loadingPage" class="page hidden loading-background min-h-screen">
+        <!-- Subtle Background Elements -->
+        <div class="minimal-particle"></div>
+        <div class="minimal-particle"></div>
+        <div class="minimal-particle"></div>
 
+        <!-- Loading Content -->
+        <div class="loading-content">
+            <!-- Skeleton Preview of Dashboard -->
+            <div class="skeleton-preview">
+                <!-- Header -->
+                <div class="skeleton-header">
+                    <div class="skeleton-logo"></div>
+                    <div class="skeleton-title-group">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-subtitle"></div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="skeleton-stats">
+                    <div class="skeleton-stat-card">
+                        <div class="skeleton-stat-number"></div>
+                        <div class="skeleton-stat-label"></div>
+                    </div>
+                    <div class="skeleton-stat-card">
+                        <div class="skeleton-stat-number"></div>
+                        <div class="skeleton-stat-label"></div>
+                    </div>
+                    <div class="skeleton-stat-card">
+                        <div class="skeleton-stat-number"></div>
+                        <div class="skeleton-stat-label"></div>
+                    </div>
+                    <div class="skeleton-stat-card">
+                        <div class="skeleton-stat-number"></div>
+                        <div class="skeleton-stat-label"></div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="skeleton-content">
+                    <div class="skeleton-main">
+                        <div class="skeleton-item">
+                            <div class="skeleton-item-icon"></div>
+                            <div class="skeleton-item-content">
+                                <div class="skeleton-item-title"></div>
+                                <div class="skeleton-item-subtitle"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="skeleton-item-icon"></div>
+                            <div class="skeleton-item-content">
+                                <div class="skeleton-item-title"></div>
+                                <div class="skeleton-item-subtitle"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="skeleton-item-icon"></div>
+                            <div class="skeleton-item-content">
+                                <div class="skeleton-item-title"></div>
+                                <div class="skeleton-item-subtitle"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="skeleton-item-icon"></div>
+                            <div class="skeleton-item-content">
+                                <div class="skeleton-item-title"></div>
+                                <div class="skeleton-item-subtitle"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skeleton-sidebar">
+                        <div class="skeleton-widget">
+                            <div class="skeleton-widget-title"></div>
+                            <div class="skeleton-widget-content">
+                                <div class="skeleton-widget-item"></div>
+                                <div class="skeleton-widget-item"></div>
+                                <div class="skeleton-widget-item"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-widget">
+                            <div class="skeleton-widget-title"></div>
+                            <div class="skeleton-widget-content">
+                                <div class="skeleton-widget-item"></div>
+                                <div class="skeleton-widget-item"></div>
+                                <div class="skeleton-widget-item"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Info -->
+        <div class="skeleton-loading-info">
+            <div class="dots-container">
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+            </div>
+            <p id="loadingStatus" class="skeleton-loading-text">กำลังเริ่มต้นระบบ...</p>
+        </div>
+    </div>
 
     <!-- JavaScript Files -->
     <script src="./js/utils.js"></script>
     <script src="./js/auth.js"></script>
+    <script src="./js/dashboard.js"></script>
     <script src="./js/main.js"></script>
-
-    <script>
-        // Login handler function
-        function handleLogin() {
-            const loginButton = document.getElementById('loginButton');
-            const googleIcon = document.getElementById('googleIcon');
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            const successCheck = document.getElementById('successCheck');
-            const buttonText = document.getElementById('buttonText');
-            const errorMessage = document.getElementById('errorMessage');
-            const successMessage = document.getElementById('successMessage');
-
-            // Hide any previous messages
-            errorMessage.classList.add('hidden');
-            successMessage.classList.add('hidden');
-
-            // Show loading state
-            googleIcon.classList.add('hidden');
-            loadingSpinner.classList.remove('hidden');
-            buttonText.textContent = 'กำลังเข้าสู่ระบบ...';
-            loginButton.disabled = true;
-
-            // Simulate login process
-            setTimeout(() => {
-                // Hide loading
-                loadingSpinner.classList.add('hidden');
-                
-                // Show success checkmark
-                successCheck.classList.remove('hidden');
-                buttonText.textContent = 'เข้าสู่ระบบสำเร็จ';
-                
-                // Show success message
-                successMessage.classList.remove('hidden');
-
-                // Simulate redirect to loading page after 1.5 seconds
-                setTimeout(() => {
-                    // Option 1: Redirect to loading page
-                    window.location.href = './loading.html';
-                    
-                    // Option 2: If you want to open in same window
-                    // window.open('./loading.html', '_self');
-                }, 1500);
-
-            }, 2000); // Simulate 2 second loading time
-        }
-
-        // Handle error case (you can call this function if login fails)
-        function showLoginError() {
-            const loginButton = document.getElementById('loginButton');
-            const googleIcon = document.getElementById('googleIcon');
-            const loadingSpinner = document.getElementById('loadingSpinner');
-            const successCheck = document.getElementById('successCheck');
-            const buttonText = document.getElementById('buttonText');
-            const errorMessage = document.getElementById('errorMessage');
-            const successMessage = document.getElementById('successMessage');
-
-            // Hide loading and success states
-            loadingSpinner.classList.add('hidden');
-            successCheck.classList.add('hidden');
-            successMessage.classList.add('hidden');
-            
-            // Show error
-            errorMessage.classList.remove('hidden');
-            
-            // Reset button
-            googleIcon.classList.remove('hidden');
-            buttonText.textContent = 'เข้าสู่ระบบด้วย Google';
-            loginButton.disabled = false;
-        }
-    </script>
 </body>
 
 </html>
