@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>กำลังโหลด - ระบบจัดการตารางเรียนตารางสอน</title>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/animations.css">
+</head>
+
+<body class="min-h-screen relative overflow-x-hidden">
+    <!-- LOADING PAGE -->
+    <div id="loadingPage" class="page active loading-background min-h-screen">
+        <!-- Subtle Background Elements -->
+        <div class="minimal-particle"></div>
+        <div class="minimal-particle"></div>
+        <div class="minimal-particle"></div>
+
+        <!-- Loading Content -->
+        <div class="loading-content">
+            <!-- Skeleton Preview of Dashboard -->
+            <div class="skeleton-preview">
+                <!-- Header -->
+                <div class="skeleton-header">
+                    <div class="skeleton-logo"></div>
+                    <div class="skeleton-title-group">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-subtitle"></div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="skeleton-stats">
+                    <div class="skeleton-stat-card">
+                        <div class="skeleton-stat-number"></div>
+                        <div class="skeleton-stat-label"></div>
+                    </div>
+                    <div class="skeleton-stat-card">
+                        <div class="skeleton-stat-number"></div>
+                        <div class="skeleton-stat-label"></div>
+                    </div>
+                    <div class="skeleton-stat-card">
+                        <div class="skeleton-stat-number"></div>
+                        <div class="skeleton-stat-label"></div>
+                    </div>
+                    <div class="skeleton-stat-card">
+                        <div class="skeleton-stat-number"></div>
+                        <div class="skeleton-stat-label"></div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="skeleton-content">
+                    <div class="skeleton-main">
+                        <div class="skeleton-item">
+                            <div class="skeleton-item-icon"></div>
+                            <div class="skeleton-item-content">
+                                <div class="skeleton-item-title"></div>
+                                <div class="skeleton-item-subtitle"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="skeleton-item-icon"></div>
+                            <div class="skeleton-item-content">
+                                <div class="skeleton-item-title"></div>
+                                <div class="skeleton-item-subtitle"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="skeleton-item-icon"></div>
+                            <div class="skeleton-item-content">
+                                <div class="skeleton-item-title"></div>
+                                <div class="skeleton-item-subtitle"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-item">
+                            <div class="skeleton-item-icon"></div>
+                            <div class="skeleton-item-content">
+                                <div class="skeleton-item-title"></div>
+                                <div class="skeleton-item-subtitle"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skeleton-sidebar">
+                        <div class="skeleton-widget">
+                            <div class="skeleton-widget-title"></div>
+                            <div class="skeleton-widget-content">
+                                <div class="skeleton-widget-item"></div>
+                                <div class="skeleton-widget-item"></div>
+                                <div class="skeleton-widget-item"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-widget">
+                            <div class="skeleton-widget-title"></div>
+                            <div class="skeleton-widget-content">
+                                <div class="skeleton-widget-item"></div>
+                                <div class="skeleton-widget-item"></div>
+                                <div class="skeleton-widget-item"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Info -->
+        <div class="skeleton-loading-info">
+            <div class="dots-container">
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+            </div>
+            <p id="loadingStatus" class="skeleton-loading-text">กำลังเริ่มต้นระบบ...</p>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="./js/utils.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+
+</html>
