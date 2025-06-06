@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT KMITL - เลือกโครงการตารางเรียนตารางสอน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===== BASE STYLES ===== */
+        body {
+            font-family: 'Inter', 'Noto Sans Thai', sans-serif;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+        
+        /* ===== VARIABLES ===== */
+        :root {
+            --kmitl-blue-50:  #eff6ff;
+            --kmitl-blue-100: #dbeafe;
+            --kmitl-blue-200: #bfdbfe;
+            --kmitl-blue-300: #93c5fd;
+            --kmitl-blue-400: #60a5fa;
+            --kmitl-blue-500: #3b82f6;
+            --kmitl-blue-600: #2563eb;
+            --kmitl-blue-700: #1d4ed8;
+            --kmitl-blue-800: #1e40af;
+            --kmitl-blue-900: #1e3a8a;
+            
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 10px 25px rgba(0, 0, 0, 0.15);
+            
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+            --radius-2xl: 1rem;
+            --radius-3xl: 1.5rem;
+        }
+        
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translate3d(0, 20px, 0); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translate3d(0, 0, 0); 
+            }
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate3d(0, -10px, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .slide-down {
+            animation: slideDown 0.4s ease-out;
+        }
+        
+        .scale-in {
+            animation: scaleIn 0.5s ease-out;
+        }
+        
+        /* ===== COMPONENT STYLES ===== */
+        .nav-item {
+            transition: all 0.15s ease-out;
+            transform: translateZ(0);
+            position: relative;
+        }
+        
+        .nav-item:hover {
+            color: var(--kmitl-blue-600);
+            background-color: var(--kmitl-blue-50);
+        }
+        
+        .nav-item:hover svg {
+            color: var(--kmitl-blue-600);
+        }
+        
+        .nav-item svg {
+            transition: all 0.15s ease-out;
+        }
+        
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--kmitl-blue-500);
+            transition: all 0.2s ease-out;
+            transform: translateX(-50%);
+        }
+        
+        .nav-item:hover::after {
+            width: 80%;
+        }
+        
+        .search-input {
+            transition: all 0.15s ease-out;
+            transform: translateZ(0);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--kmitl-blue-500);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* ===== FIXED CARD LAYOUT ===== */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            align-items: start;
+        }
+        
+        .project-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease-out;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            cursor: pointer;
+            min-height: 360px;
+            max-height: 360px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .project-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translate3d(0, -4px, 0);
+            border-color: var(--kmitl-blue-200);
+        }
+        
+        .add-project-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 2px dashed #cbd5e1 !important;
+            color: #64748b;
+            min-height: 360px !important;
+            max-height: 360px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center;
+        }
+        
+        .add-project-card:hover {
+            background: linear-gradient(135deg, var(--kmitl-blue-50) 0%, #dbeafe 100%);
+            border-color: var(--kmitl-blue-300) !important;
+            color: var(--kmitl-blue-600);
+            transform: translate3d(0, -2px, 0);
+        }
+        
+        .project-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 1.5rem;
+        }
+        
+        .project-header {
+            margin-bottom: 1rem;
+        }
+        
+        .project-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .project-footer {
+            margin-top: auto;
+            padding-top: 1rem;
+        }
+        
+        .dropdown-menu {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            transform: translate3d(0, 10px, 0);
+            opacity: 0;
+            transition: all 0.15s ease-out;
+            pointer-events: none;
+        }
+        
+        .dropdown-menu.show {
+            transform: translate3d(0, 0, 0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .dropdown-item {
+            transition: all 0.1s ease-out;
+            transform: translateZ(0);
+        }
+        
+        .dropdown-item:hover {
+            background: var(--kmitl-blue-50);
+            color: var(--kmitl-blue-600);
+        }
+        
+        .filter-option {
+            transition: all 0.1s ease-out;
+            transform: translateZ(0);
+        }
+        
+        .filter-option:hover {
+            background: var(--kmitl-blue-50);
+            color: var(--kmitl-blue-600);
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-draft {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-completed {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+        
+        .status-archived {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #f1f5f9;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--kmitl-blue-500) 0%, var(--kmitl-blue-600) 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease-out;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 640px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .projects-section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .filter-controls {
+                width: 100%;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            #filterDropdownBtn {
+                min-width: auto;
+                flex: 1;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            #filterDropdownBtn {
+                width: 100%;
+            }
+        }
+        
+        /* Mobile menu specific styles */
+        .mobile-nav-item {
+            transition: all 0.15s ease-out;
+        }
+        
+        .mobile-nav-item:hover {
+            color: var(--kmitl-blue-600);
+            background-color: var(--kmitl-blue-50);
+        }
+        
+        .mobile-nav-item:hover svg {
+            color: var(--kmitl-blue-600);
+            transform: scale(1.1);
+        }
+        
+        .mobile-nav-item svg {
+            transition: all 0.15s ease-out;
+        }
+        
+        #mobileMenu {
+            animation: slideDown 0.3s ease-out;
+        }
+        
+        #mobileMenu.hidden {
+            animation: none;
+        }
+        
+        .nav-item.active {
+            color: var(--kmitl-blue-600);
+            background-color: var(--kmitl-blue-50);
+        }
+        
+        .nav-item.active::after {
+            width: 80%;
+        }
+        
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            background: var(--kmitl-blue-500);
+            border-radius: 50%;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+            z-index: 30;
+        }
+        
+        .fab:hover {
+            background: var(--kmitl-blue-600);
+            transform: translate3d(0, -2px, 0);
+            box-shadow: 0 20px 30px -10px rgba(59, 130, 246, 0.3);
+        }
+        
+        .fab:active {
+            transform: translate3d(0, 0, 0) scale(0.95);
+        }
+        
+        /* ===== UTILITY CLASSES ===== */
+        .text-kmitl-blue-600 {
+            color: var(--kmitl-blue-600);
+        }
+        
+        .text-kmitl-blue-700 {
+            color: var(--kmitl-blue-700);
+        }
+        
+        .hover\\:text-kmitl-blue-600:hover {
+            color: var(--kmitl-blue-600);
+        }
+        
+        .hover\\:text-kmitl-blue-700:hover {
+            color: var(--kmitl-blue-700);
+        }
+        
+        .bg-kmitl-blue-50 {
+            background-color: var(--kmitl-blue-50);
+        }
+        
+        /* ===== FOOTER STYLES ===== */
+        footer {
+            background: linear-gradient(to bottom, white 0%, #f8fafc 100%);
+        }
+        
+        footer h3 {
+            color: var(--slate-900);
+            font-weight: var(--font-weight-semibold);
+        }
+        
+        footer h4 {
+            color: var(--slate-700);
+            font-weight: var(--font-weight-medium);
+            letter-spacing: 0.05em;
+        }
+        
+        footer a {
+            transition: all 0.15s ease-out;
+            position: relative;
+        }
+        
+        footer a:hover {
+            transform: translateX(2px);
+        }
+        
+        footer a:hover svg {
+            color: var(--kmitl-blue-600);
+        }
+        
+        footer .social-link {
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.15s ease-out;
+        }
+        
+        footer .social-link:hover {
+            background: var(--kmitl-blue-50);
+            transform: translate3d(0, -2px, 0);
+        }
+        
+        /* System Status Indicator */
+        .status-indicator {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        
+        /* Mobile Footer Responsive */
+        @media (max-width: 768px) {
+            footer {
+                margin-top: 3rem;
+            }
+            
+            footer .grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            footer .lg\\:col-span-2 {
+                order: 1;
+            }
+            
+            footer .flex.flex-col.md\\:flex-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            footer .flex.items-center.space-x-4 {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-slate-50">
+    
+    <!-- ===== HEADER NAVIGATION ===== -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40 backdrop-blur-sm slide-down">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-3 items-center h-16 lg:flex lg:justify-between">
+                
+                <!-- Logo Section -->
+                <div class="flex items-center">
+                    <div class="flex items-center space-x-3">
+                        <img src="https://via.placeholder.com/32x32/1e40af/ffffff?text=IT" 
+                             alt="IT KMITL" 
+                             class="w-8 h-8 rounded-lg">
+                        <div>
+                            <span class="text-xl font-semibold text-slate-900">IT KMITL</span>
+                            <div class="text-xs text-slate-500 -mt-1">ระบบตารางเรียนตารางสอน</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navigation Menu - กึ่งกลาง -->
+                <nav class="hidden lg:flex items-center justify-center space-x-6">
+                    <a href="#" class="nav-item text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-2 rounded-md transition-colors flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                        <span>หลักสูตร</span>
+                    </a>
+                    <a href="#" class="nav-item text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-2 rounded-md transition-colors flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span>รายวิชา</span>
+                    </a>
+                    <a href="#" class="nav-item text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-2 rounded-md transition-colors flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        <span>อาจารย์</span>
+                    </a>
+                    <a href="#" class="nav-item text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-2 rounded-md transition-colors flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                        <span>ห้องเรียน</span>
+                    </a>
+                    <a href="#" class="nav-item text-sm font-medium text-slate-600 hover:text-slate-900 px-3 py-2 rounded-md transition-colors flex items-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                        </svg>
+                        <span>นักศึกษา</span>
+                    </a>
+                </nav>
+                
+                <!-- User Profile -->
+                <div class="relative flex items-center justify-end space-x-3">
+                    <!-- Mobile Menu Button -->
+                    <button id="mobileMenuBtn" class="lg:hidden p-2 rounded-md text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                    
+                    <div class="hidden md:block text-right">
+                        <div class="text-sm font-medium text-slate-900">อาจารย์สมชาย ใจดี</div>
+                        <div class="text-xs text-slate-500">เจ้าหน้าที่ฝ่ายวิชาการ</div>
+                    </div>
+                    
+                    <button id="profileBtn" class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center hover:bg-slate-300 transition-colors">
+                        <svg class="w-5 h-5 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                    
+                    <!-- Profile Dropdown -->
+                    <div id="profileDropdown" class="dropdown-menu absolute right-0 mt-2 w-48 py-2">
+                        <a href="#" class="dropdown-item block px-4 py-2 text-sm text-slate-700">โปรไฟล์</a>
+                        <a href="#" class="dropdown-item block px-4 py-2 text-sm text-slate-700">ตั้งค่า</a>
+                        <div class="border-t border-slate-100 my-1"></div>
+                        <a href="#" class="dropdown-item block px-4 py-2 text-sm text-red-600">ออกจากระบบ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation Menu -->
+        <div id="mobileMenu" class="lg:hidden bg-white border-t border-slate-200 hidden">
+            <div class="px-4 py-3 space-y-1">
+                <a href="#" class="mobile-nav-item block px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors flex items-center space-x-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    <span>หลักสูตร</span>
+                </a>
+                <a href="#" class="mobile-nav-item block px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors flex items-center space-x-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span>รายวิชา</span>
+                </a>
+                <a href="#" class="mobile-nav-item block px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors flex items-center space-x-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    <span>อาจารย์</span>
+                </a>
+                <a href="#" class="mobile-nav-item block px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors flex items-center space-x-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    <span>ห้องเรียน</span>
+                </a>
+                <a href="#" class="mobile-nav-item block px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors flex items-center space-x-3">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                    </svg>
+                    <span>นักศึกษา</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 fade-in">
+        
+        <!-- Hero Section -->
+        <div class="text-center mb-12 scale-in">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">เลือกโครงการ</h1>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                เลือกภาคการศึกษาหรือโครงการตารางเรียนตารางสอนที่ต้องการจัดการ
+            </p>
+        </div>
+
+        <!-- Search Section -->
+        <div class="mb-10">
+            <!-- Section Header -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">ระบบจัดตารางสอน</h2>
+                <p class="text-slate-600 max-w-xl mx-auto">เลือกโครงการตารางเรียนตารางสอนตามภาคการศึกษาและปีการศึกษา</p>
+            </div>
+            
+            <!-- Centered Search Box -->
+            <div class="max-w-2xl mx-auto mb-8">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none z-10">
+                        <!-- Search Icon -->
+                        <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </div>
+                    <input type="text" 
+                           placeholder="ค้นหาตามภาคการศึกษา ปีการศึกษา หรือชื่อโครงการ..." 
+                           class="search-input w-full pl-12 pr-16 py-3.5 border border-slate-200 rounded-2xl text-slate-700 placeholder-slate-400 bg-white text-base shadow-sm focus:shadow-md focus:border-blue-500 transition-all">
+                    <!-- Keyboard Hint -->
+                    <div class="absolute right-4 top-1/2 transform -translate-y-1/2 hidden sm:flex items-center space-x-1 text-xs text-slate-400">
+                        <kbd class="px-1.5 py-0.5 bg-slate-100 rounded text-xs border">⌘K</kbd>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Section -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-6 projects-section-header">
+                <h2 class="text-xl font-semibold text-slate-900" id="sectionTitle">โครงการทั้งหมด</h2>
+                
+                <!-- Filter Section - ด้านขวา -->
+                <div class="flex items-center space-x-4 filter-controls">
+                    <span class="text-sm text-slate-500" id="projectCount">12 โครงการ</span>
+                    
+                    <div class="flex items-center space-x-2">
+                        <!-- Filter Dropdown -->
+                        <div class="relative">
+                            <button id="filterDropdownBtn" class="flex items-center space-x-2 px-4 py-2.5 border border-slate-300 rounded-lg bg-white hover:bg-slate-50 transition-colors min-w-[140px]">
+                                <svg class="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"/>
+                                </svg>
+                                <span id="currentFilter" class="text-sm font-medium text-slate-700">ทั้งหมด</span>
+                                <svg class="w-4 h-4 text-slate-500 transition-transform duration-200" id="filterDropdownIcon" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                            
+                            <!-- Enhanced Dropdown Menu -->
+                            <div id="filterDropdownMenu" class="dropdown-menu absolute right-0 mt-2 w-72 py-3 bg-white border border-slate-200 rounded-xl shadow-lg z-10">
+                                <div class="px-4 py-3 border-b border-slate-100">
+                                    <h3 class="text-sm font-semibold text-slate-900">กรองโครงการ</h3>
+                                    <p class="text-xs text-slate-500 mt-1">เลือกประเภทโครงการที่ต้องการดู</p>
+                                </div>
+                                
+                                <div class="py-2">
+                                    <div class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        ประเภทโครงการ
+                                    </div>
+                                    <button class="filter-option w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 flex items-center justify-between" data-filter="ทั้งหมด">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-2 h-2 bg-slate-400 rounded-full"></div>
+                                            <span>ทั้งหมด</span>
+                                        </div>
+                                        <span class="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">12 โครงการ</span>
+                                    </button>
+                                    <button class="filter-option w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 flex items-center justify-between" data-filter="โครงการล่าสุด">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                                            <span>โครงการล่าสุด</span>
+                                        </div>
+                                        <span class="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">3 โครงการ</span>
+                                    </button>
+                                </div>
+                                
+                                <div class="border-t border-slate-100 py-2">
+                                    <div class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                        สถานะ
+                                    </div>
+                                    <button class="filter-option w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 flex items-center justify-between" data-filter="กำลังดำเนินการ">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                                            <span>กำลังดำเนินการ</span>
+                                        </div>
+                                        <span class="text-xs text-slate-500 bg-green-100 text-green-700 px-2 py-1 rounded-full">2 โครงการ</span>
+                                    </button>
+                                    <button class="filter-option w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 flex items-center justify-between" data-filter="เสร็จสิ้น">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+                                            <span>เสร็จสิ้น</span>
+                                        </div>
+                                        <span class="text-xs text-slate-500 bg-blue-100 text-blue-700 px-2 py-1 rounded-full">3 โครงการ</span>
+                                    </button>
+                                    <button class="filter-option w-full text-left px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 flex items-center justify-between" data-filter="เก็บถาวร">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-2 h-2 bg-slate-400 rounded-full"></div>
+                                            <span>เก็บถาวร</span>
+                                        </div>
+                                        <span class="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">1 โครงการ</span>
+                                    </button>
+                                </div>
+                                
+                                <!-- Quick Actions -->
+                                <div class="border-t border-slate-100 px-4 py-3">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex flex-wrap gap-1">
+                                            <button class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs rounded transition-colors" onclick="quickFilter('ภาคปกติ')">
+                                                ภาคปกติ
+                                            </button>
+                                            <button class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs rounded transition-colors" onclick="quickFilter('ภาคฤดูร้อน')">
+                                                ฤดูร้อน
+                                            </button>
+                                            <button class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs rounded transition-colors" onclick="quickFilter('2567')">
+                                                2567
+                                            </button>
+                                        </div>
+                                        <button class="px-2 py-1 text-xs text-slate-500 hover:text-slate-700 transition-colors" onclick="resetAllFilters()">
+                                            รีเซ็ต
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Reset Button -->
+                        <button class="p-2.5 border border-slate-300 rounded-lg bg-white hover:bg-slate-50 transition-colors" title="รีเซ็ตตัวกรอง" onclick="resetAllFilters()">
+                            <svg class="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Grid -->
+            <div class="projects-grid">
+                
+                <!-- Add New Project Card -->
+                <div class="project-card add-project-card" id="addProjectCard">
+                    <svg class="w-20 h-20 mb-4 text-slate-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <h3 class="text-xl font-semibold text-slate-700 mb-2">สร้างโครงการใหม่</h3>
+                    <p class="text-sm text-slate-500">เริ่มต้นภาคการศึกษาใหม่</p>
+                </div>
+                
+                <!-- Project Card 1 -->
+                <div class="project-card" data-project="2567-1">
+                    <div class="project-content">
+                        <div class="project-header">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <span class="status-badge status-active">กำลังดำเนินการ</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-slate-900 mb-2">ภาคการศึกษา 1/2567</h3>
+                            <p class="text-sm text-slate-600">ตารางเรียนตารางสอนภาคการศึกษาที่ 1 ปีการศึกษา 2567</p>
+                        </div>
+                        
+                        <div class="project-body">
+                            <div class="space-y-3 mb-4">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">รายวิชา</span>
+                                    <span class="font-medium">247 วิชา</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">ตารางที่จัดแล้ว</span>
+                                    <span class="font-medium">189 ตาราง</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">ความขัดแย้ง</span>
+                                    <span class="font-medium text-red-600">12 รายการ</span>
+                                </div>
+                            </div>
+                            
+                            <div class="project-footer">
+                                <div class="progress-bar mb-2">
+                                    <div class="progress-fill" style="width: 77%"></div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-slate-500">77% เสร็จสิ้น</span>
+                                    <span class="text-xs text-slate-500">อัปเดต 2 ชั่วโมงที่แล้ว</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project Card 2 -->
+                <div class="project-card" data-project="2567-2">
+                    <div class="project-content">
+                        <div class="project-header">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <span class="status-badge status-draft">แบบร่าง</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-slate-900 mb-2">ภาคการศึกษา 2/2567</h3>
+                            <p class="text-sm text-slate-600">ตารางเรียนตารางสอนภาคการศึกษาที่ 2 ปีการศึกษา 2567</p>
+                        </div>
+                        
+                        <div class="project-body">
+                            <div class="space-y-3 mb-4">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">รายวิชา</span>
+                                    <span class="font-medium">203 วิชา</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">ตารางที่จัดแล้ว</span>
+                                    <span class="font-medium">45 ตาราง</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">ความขัดแย้ง</span>
+                                    <span class="font-medium text-gray-500">-</span>
+                                </div>
+                            </div>
+                            
+                            <div class="project-footer">
+                                <div class="progress-bar mb-2">
+                                    <div class="progress-fill" style="width: 22%"></div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-slate-500">22% เสร็จสิ้น</span>
+                                    <span class="text-xs text-slate-500">อัปเดต 3 วันที่แล้ว</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project Card 3 -->
+                <div class="project-card" data-project="2566-3">
+                    <div class="project-content">
+                        <div class="project-header">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <span class="status-badge status-completed">เสร็จสิ้น</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-slate-900 mb-2">ภาคการศึกษา 3/2566</h3>
+                            <p class="text-sm text-slate-600">ตารางเรียนตารางสอนภาคฤดูร้อน ปีการศึกษา 2566</p>
+                        </div>
+                        
+                        <div class="project-body">
+                            <div class="space-y-3 mb-4">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">รายวิชา</span>
+                                    <span class="font-medium">89 วิชา</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">ตารางที่จัดแล้ว</span>
+                                    <span class="font-medium">89 ตาราง</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">ความขัดแย้ง</span>
+                                    <span class="font-medium text-green-600">0 รายการ</span>
+                                </div>
+                            </div>
+                            
+                            <div class="project-footer">
+                                <div class="progress-bar mb-2">
+                                    <div class="progress-fill" style="width: 100%"></div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-slate-500">100% เสร็จสิ้น</span>
+                                    <span class="text-xs text-slate-500">อัปเดต 1 สัปดาห์ที่แล้ว</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project Card 4 -->
+                <div class="project-card" data-project="2566-2">
+                    <div class="project-content">
+                        <div class="project-header">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <span class="status-badge status-completed">เสร็จสิ้น</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-slate-900 mb-2">ภาคการศึกษา 2/2566</h3>
+                            <p class="text-sm text-slate-600">ตารางเรียนตารางสอนภาคการศึกษาที่ 2 ปีการศึกษา 2566</p>
+                        </div>
+                        
+                        <div class="project-body">
+                            <div class="space-y-3 mb-4">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">รายวิชา</span>
+                                    <span class="font-medium">234 วิชา</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">ตารางที่จัดแล้ว</span>
+                                    <span class="font-medium">234 ตาราง</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">ความขัดแย้ง</span>
+                                    <span class="font-medium text-green-600">0 รายการ</span>
+                                </div>
+                            </div>
+                            
+                            <div class="project-footer">
+                                <div class="progress-bar mb-2">
+                                    <div class="progress-fill" style="width: 100%"></div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-slate-500">100% เสร็จสิ้น</span>
+                                    <span class="text-xs text-slate-500">อัปเดต 2 เดือนที่แล้ว</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Project Card 5 -->
+                <div class="project-card" data-project="2566-1">
+                    <div class="project-content">
+                        <div class="project-header">
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-slate-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <span class="status-badge status-archived">เก็บถาวร</span>
+                            </div>
+                            <h3 class="text-lg font-semibold text-slate-900 mb-2">ภาคการศึกษา 1/2566</h3>
+                            <p class="text-sm text-slate-600">ตารางเรียนตารางสอนภาคการศึกษาที่ 1 ปีการศึกษา 2566</p>
+                        </div>
+                        
+                        <div class="project-body">
+                            <div class="space-y-3 mb-4">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">รายวิชา</span>
+                                    <span class="font-medium">267 วิชา</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">ตารางที่จัดแล้ว</span>
+                                    <span class="font-medium">267 ตาราง</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-600">ความขัดแย้ง</span>
+                                    <span class="font-medium text-green-600">0 รายการ</span>
+                                </div>
+                            </div>
+                            
+                            <div class="project-footer">
+                                <div class="progress-bar mb-2">
+                                    <div class="progress-fill" style="width: 100%"></div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs text-slate-500">100% เสร็จสิ้น</span>
+                                    <span class="text-xs text-slate-500">อัปเดต 6 เดือนที่แล้ว</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <div class="fab" id="fabAddProject">
+        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
+        </svg>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="bg-white border-t border-slate-200 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Main Footer Content -->
+            <div class="py-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    
+                    <!-- KMITL Info -->
+                    <div class="lg:col-span-2">
+                        <div class="flex items-center space-x-3 mb-6">
+                            <img src="https://via.placeholder.com/40x40/1e40af/ffffff?text=IT" 
+                                 alt="IT KMITL" 
+                                 class="w-10 h-10 rounded-lg">
+                            <div>
+                                <h3 class="text-lg font-semibold text-slate-900">IT KMITL</h3>
+                                <p class="text-sm text-slate-600">ระบบจัดการตารางเรียนตารางสอน</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-slate-600 leading-relaxed mb-4">
+                            สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง<br>
+                            คณะเทคโนโลยีสารสนเทศ
+                        </p>
+                        <div class="text-sm text-slate-600 space-y-2">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                                </svg>
+                                <span>1 ซอยฉลองกรุง 1 แขวงลาดกระบัง เขตลาดกระบัง กรุงเทพฯ 10520</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
+                                </svg>
+                                <span>02-329-8000</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                                </svg>
+                                <span>info@it.kmitl.ac.th</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Links -->
+                    <div>
+                        <h4 class="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">
+                            ลิงก์ด่วน
+                        </h4>
+                        <ul class="space-y-3">
+                            <li>
+                                <a href="#" class="text-sm text-slate-600 hover:text-kmitl-blue-600 transition-colors flex items-center space-x-2">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span>หน้าแรกระบบ</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="text-sm text-slate-600 hover:text-kmitl-blue-600 transition-colors flex items-center space-x-2">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span>คู่มือการใช้งาน</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="text-sm text-slate-600 hover:text-kmitl-blue-600 transition-colors flex items-center space-x-2">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span>รายงานปัญหา</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="text-sm text-slate-600 hover:text-kmitl-blue-600 transition-colors flex items-center space-x-2">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span>ความช่วยเหลือ</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- System Info -->
+                    <div>
+                        <h4 class="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4">
+                            ข้อมูลระบบ
+                        </h4>
+                        <ul class="space-y-3">
+                            <li>
+                                <div class="text-sm text-slate-600">
+                                    <span class="font-medium">เวอร์ชัน:</span> v2.1.4
+                                </div>
+                            </li>
+                            <li>
+                                <div class="text-sm text-slate-600">
+                                    <span class="font-medium">อัปเดตล่าสุด:</span> 15 มี.ค. 2567
+                                </div>
+                            </li>
+                            <li>
+                                <div class="text-sm text-slate-600">
+                                    <span class="font-medium">สถานะระบบ:</span> 
+                                    <span class="inline-flex items-center space-x-1">
+                                        <div class="w-2 h-2 bg-green-400 rounded-full status-indicator"></div>
+                                        <span class="text-green-600">ปกติ</span>
+                                    </span>
+                                </div>
+                            </li>
+                            <li>
+                                <a href="#" class="text-sm text-kmitl-blue-600 hover:text-kmitl-blue-700 transition-colors flex items-center space-x-2">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span>ประกาศการบำรุงรักษา</span>
+                                </a>
+                            </li>
+                            <li class="pt-3 border-t border-slate-200">
+                                <div class="text-sm text-slate-600">
+                                    <span class="font-medium">ผู้พัฒนาระบบ:</span>
+                                </div>
+                                <div class="text-sm text-slate-700 mt-1 flex items-center space-x-2">
+                                    <svg class="w-3 h-3 text-slate-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span class="font-medium">พิศลย์ อุตตาลกาญจนา</span>
+                                </div>
+                                <div class="text-xs text-slate-500 mt-1">
+                                    นักศึกษา คณะเทคโนโลยีสารสนเทศ
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <!-- Bottom Footer -->
+            <div class="border-t border-slate-200 py-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                    
+                    <!-- Copyright -->
+                    <div class="text-sm text-slate-600">
+                        <p>&copy; 2567 สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง (IT KMITL)</p>
+                        <p class="mt-1">สงวนลิขสิทธิ์ทุกประการ</p>
+                    </div>
+                    
+                    <!-- Social Links & Additional Info -->
+                    <div class="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-6">
+                        
+                        <!-- Social Links -->
+                        <div class="flex items-center space-x-4">
+                            <a href="#" class="social-link text-slate-500 hover:text-kmitl-blue-600 transition-colors" title="Facebook">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="social-link text-slate-500 hover:text-kmitl-blue-600 transition-colors" title="LINE">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63h2.386c.349 0 .63.285.63.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.628-.629.628M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="social-link text-slate-500 hover:text-kmitl-blue-600 transition-colors" title="YouTube">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                                </svg>
+                            </a>
+                        </div>
+                        
+                        <!-- Additional Links -->
+                        <div class="flex items-center space-x-4 text-sm">
+                            <a href="#" class="text-slate-500 hover:text-kmitl-blue-600 transition-colors">นโยบายความเป็นส่วนตัว</a>
+                            <span class="text-slate-300">|</span>
+                            <a href="#" class="text-slate-500 hover:text-kmitl-blue-600 transition-colors">เงื่อนไขการใช้งาน</a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // GPU acceleration for all interactive elements
+            const interactiveElements = document.querySelectorAll('.project-card, .nav-item');
+            interactiveElements.forEach(el => {
+                el.style.transform = 'translateZ(0)';
+                el.style.backfaceVisibility = 'hidden';
+            });
+        });
+
+        // ===== PROFILE DROPDOWN =====
+        const profileBtn = document.getElementById('profileBtn');
+        const profileDropdown = document.getElementById('profileDropdown');
+
+        profileBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            profileDropdown.classList.remove('show');
+        });
+
+        // ===== MOBILE MENU =====
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                mobileMenu.classList.toggle('hidden');
+                
+                // Toggle hamburger icon
+                const icon = mobileMenuBtn.querySelector('svg');
+                if (mobileMenu.classList.contains('hidden')) {
+                    // Show hamburger
+                    icon.innerHTML = '<path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>';
+                } else {
+                    // Show X
+                    icon.innerHTML = '<path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>';
+                }
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function() {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    // Reset hamburger icon
+                    const icon = mobileMenuBtn.querySelector('svg');
+                    icon.innerHTML = '<path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>';
+                }
+            });
+        }
+
+        // ===== SEARCH FUNCTIONALITY =====
+        const searchInput = document.querySelector('.search-input');
+        const searchResultCount = document.getElementById('searchResultCount');
+        
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const projectCards = document.querySelectorAll('.project-card:not(.add-project-card)');
+            let visibleCount = 0;
+            
+            projectCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const description = card.querySelector('p').textContent.toLowerCase();
+                
+                // Check if card is currently visible (not filtered out)
+                const isCurrentlyVisible = card.style.display !== 'none';
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    if (isCurrentlyVisible || searchTerm === '') {
+                        card.style.display = 'block';
+                        card.style.animation = 'fadeIn 0.3s ease-out';
+                        visibleCount++;
+                    }
+                } else {
+                    if (searchTerm !== '') {
+                        card.style.display = 'none';
+                    }
+                }
+            });
+            
+            // Update counts
+            if (searchTerm !== '') {
+                projectCount.textContent = `${visibleCount} โครงการ`;
+                if (searchResultCount) searchResultCount.textContent = visibleCount;
+                if (visibleCount === 0) {
+                    sectionTitle.textContent = 'ไม่พบโครงการ';
+                } else {
+                    sectionTitle.textContent = 'ผลการค้นหา';
+                }
+            } else {
+                // Reset to current filter when search is cleared
+                const currentFilter = currentFilterText.textContent;
+                const matchingOption = Array.from(filterOptions).find(option => 
+                    option.dataset.filter === currentFilter
+                );
+                if (matchingOption) {
+                    matchingOption.click();
+                }
+            }
+        });
+
+        // ===== FILTER DROPDOWN =====
+        const filterDropdownBtn = document.getElementById('filterDropdownBtn');
+        const filterDropdownMenu = document.getElementById('filterDropdownMenu');
+        const filterDropdownIcon = document.getElementById('filterDropdownIcon');
+        const currentFilterText = document.getElementById('currentFilter');
+        const filterOptions = document.querySelectorAll('.filter-option');
+        const sectionTitle = document.getElementById('sectionTitle');
+        const projectCount = document.getElementById('projectCount');
+        
+        // Define recent projects (by last update - most recent first)
+        const recentProjects = ['2567-1', '2567-2', '2566-3']; // Top 3 recent projects
+        
+        // Toggle dropdown
+        filterDropdownBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isOpen = filterDropdownMenu.classList.contains('show');
+            
+            if (isOpen) {
+                filterDropdownMenu.classList.remove('show');
+                filterDropdownIcon.style.transform = 'rotate(0deg)';
+            } else {
+                filterDropdownMenu.classList.add('show');
+                filterDropdownIcon.style.transform = 'rotate(180deg)';
+            }
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            filterDropdownMenu.classList.remove('show');
+            filterDropdownIcon.style.transform = 'rotate(0deg)';
+        });
+        
+        // Handle filter selection
+        filterOptions.forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                const filterType = this.dataset.filter;
+                const projectCards = document.querySelectorAll('.project-card:not(.add-project-card)');
+                let visibleCount = 0;
+                
+                // Update current filter text
+                currentFilterText.textContent = filterType;
+                
+                // Close dropdown
+                filterDropdownMenu.classList.remove('show');
+                filterDropdownIcon.style.transform = 'rotate(0deg)';
+                
+                projectCards.forEach(card => {
+                    const statusBadge = card.querySelector('.status-badge');
+                    const statusText = statusBadge ? statusBadge.textContent.trim() : '';
+                    const projectId = card.dataset.project;
+                    
+                    let shouldShow = false;
+                    
+                    if (filterType === 'ทั้งหมด') {
+                        shouldShow = true;
+                        sectionTitle.textContent = 'โครงการทั้งหมด';
+                    } else if (filterType === 'โครงการล่าสุด') {
+                        shouldShow = recentProjects.includes(projectId);
+                        sectionTitle.textContent = 'โครงการล่าสุด';
+                    } else if (filterType === 'กำลังดำเนินการ') {
+                        shouldShow = statusText === 'กำลังดำเนินการ' || statusText === 'แบบร่าง';
+                        sectionTitle.textContent = 'โครงการกำลังดำเนินการ';
+                    } else if (filterType === 'เสร็จสิ้น') {
+                        shouldShow = statusText === 'เสร็จสิ้น';
+                        sectionTitle.textContent = 'โครงการที่เสร็จสิ้น';
+                    } else if (filterType === 'เก็บถาวร') {
+                        shouldShow = statusText === 'เก็บถาวร';
+                        sectionTitle.textContent = 'โครงการที่เก็บถาวร';
+                    }
+                    
+                    if (shouldShow) {
+                        card.style.display = 'block';
+                        card.style.animation = 'fadeIn 0.3s ease-out';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                // Update project count
+                projectCount.textContent = `${visibleCount} โครงการ`;
+                if (searchResultCount) searchResultCount.textContent = visibleCount;
+                
+                // Update counts in dropdown options
+                updateDropdownCounts();
+            });
+        });
+        
+        // Function to update counts in dropdown
+        function updateDropdownCounts() {
+            const allCards = document.querySelectorAll('.project-card:not(.add-project-card)');
+            
+            const counts = {
+                'ทั้งหมด': allCards.length,
+                'โครงการล่าสุด': recentProjects.length,
+                'กำลังดำเนินการ': 0,
+                'เสร็จสิ้น': 0,
+                'เก็บถาวร': 0
+            };
+            
+            allCards.forEach(card => {
+                const statusBadge = card.querySelector('.status-badge');
+                const statusText = statusBadge ? statusBadge.textContent.trim() : '';
+                
+                if (statusText === 'กำลังดำเนินการ' || statusText === 'แบบร่าง') {
+                    counts['กำลังดำเนินการ']++;
+                } else if (statusText === 'เสร็จสิ้น') {
+                    counts['เสร็จสิ้น']++;
+                } else if (statusText === 'เก็บถาวร') {
+                    counts['เก็บถาวร']++;
+                }
+            });
+            
+            filterOptions.forEach(option => {
+                const filterType = option.dataset.filter;
+                const countSpan = option.querySelector('.text-xs');
+                if (countSpan && counts[filterType] !== undefined) {
+                    countSpan.textContent = `${counts[filterType]} โครงการ`;
+                }
+            });
+        }
+        
+        // Initialize counts
+        updateDropdownCounts();
+
+        // ===== QUICK FILTER FUNCTIONS =====
+        window.quickFilter = function(term) {
+            // Set search input value
+            searchInput.value = term;
+            
+            // Trigger search
+            const event = new Event('input', { bubbles: true });
+            searchInput.dispatchEvent(event);
+            
+            // Close dropdown
+            filterDropdownMenu.classList.remove('show');
+            filterDropdownIcon.style.transform = 'rotate(0deg)';
+        };
+
+        window.resetAllFilters = function() {
+            // Reset search
+            searchInput.value = '';
+            
+            // Reset filter to "ทั้งหมด"
+            const allFilterOption = Array.from(filterOptions).find(option => 
+                option.dataset.filter === 'ทั้งหมด'
+            );
+            if (allFilterOption) {
+                allFilterOption.click();
+            }
+            
+            // Close dropdown
+            filterDropdownMenu.classList.remove('show');
+            filterDropdownIcon.style.transform = 'rotate(0deg)';
+            
+            // Focus search input
+            searchInput.focus();
+        };
+
+        // ===== RESET FILTER FUNCTIONALITY =====
+        const resetFilterBtn = document.querySelector('button[title="รีเซ็ตตัวกรอง"]');
+        if (resetFilterBtn) {
+            resetFilterBtn.addEventListener('click', function() {
+                resetAllFilters();
+            });
+        }
+
+        // ===== PROJECT CARD INTERACTIONS =====
+        const projectCards = document.querySelectorAll('.project-card:not(.add-project-card)');
+        
+        projectCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const projectId = this.dataset.project;
+                const title = this.querySelector('h3').textContent;
+                
+                console.log('Opening project:', projectId, title);
+                
+                // Add loading state
+                this.style.opacity = '0.7';
+                this.style.pointerEvents = 'none';
+                
+                // Simulate navigation delay
+                setTimeout(() => {
+                    // Here you would navigate to the dashboard for this project
+                    console.log(`Navigating to dashboard for ${projectId}...`);
+                    
+                    // For demo purposes, show an alert
+                    alert(`กำลังเปิด Dashboard สำหรับ ${title}`);
+                    
+                    // Reset card state
+                    this.style.opacity = '1';
+                    this.style.pointerEvents = 'auto';
+                }, 500);
+            });
+        });
+
+        // ===== ADD NEW PROJECT =====
+        const addProjectCard = document.getElementById('addProjectCard');
+        const fabAddProject = document.getElementById('fabAddProject');
+        
+        function handleAddProject() {
+            console.log('Creating new project...');
+            
+            // For demo purposes, show a prompt
+            const newProjectName = prompt('ชื่อโครงการใหม่ (เช่น ภาคการศึกษา 1/2568):');
+            
+            if (newProjectName) {
+                // Here you would create a new project
+                console.log('Creating project:', newProjectName);
+                alert(`กำลังสร้างโครงการ "${newProjectName}"`);
+                
+                // You could also navigate to project setup page
+                // window.location.href = '/project/new?name=' + encodeURIComponent(newProjectName);
+            }
+        }
+        
+        addProjectCard.addEventListener('click', handleAddProject);
+        fabAddProject.addEventListener('click', handleAddProject);
+
+        // ===== SMOOTH ENTRANCE ANIMATIONS =====
+        window.addEventListener('load', function() {
+            const cards = document.querySelectorAll('.project-card');
+            
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translate3d(0, 20px, 0)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.4s ease-out';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translate3d(0, 0, 0)';
+                }, index * 100);
+            });
+        });
+
+        // ===== KEYBOARD SHORTCUTS =====
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + K to focus search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+            
+            // Ctrl/Cmd + N to create new project
+            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                e.preventDefault();
+                handleAddProject();
+            }
+            
+            // Ctrl/Cmd + F to open filter dropdown
+            if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                e.preventDefault();
+                filterDropdownBtn.click();
+            }
+            
+            // Escape to blur search and close dropdowns
+            if (e.key === 'Escape') {
+                searchInput.blur();
+                profileDropdown.classList.remove('show');
+                filterDropdownMenu.classList.remove('show');
+                filterDropdownIcon.style.transform = 'rotate(0deg)';
+                
+                // Close mobile menu
+                if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    if (mobileMenuBtn) {
+                        const icon = mobileMenuBtn.querySelector('svg');
+                        icon.innerHTML = '<path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>';
+                    }
+                }
+            }
+        });
+
+        // ===== RESPONSIVE HANDLERS =====
+        function handleResize() {
+            // Handle responsive changes if needed
+            console.log('Window resized');
+        }
+
+        window.addEventListener('resize', handleResize);
+
+        // ===== TOUCH GESTURES (for mobile) =====
+        let touchStartY = 0;
+        
+        document.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+        
+        document.addEventListener('touchmove', function(e) {
+            const touchY = e.touches[0].clientY;
+            const diffY = touchStartY - touchY;
+            
+            // Pull-to-refresh functionality could be implemented here
+            if (diffY < -100 && window.scrollY === 0) {
+                console.log('Pull to refresh detected');
+                // Implement refresh logic
+            }
+        }, { passive: true });
+
+        // ===== FOOTER ENHANCEMENT FEATURES =====
+        // Smooth scroll to top when clicking on footer logo
+        const footerLogo = document.querySelector('footer img');
+        if (footerLogo) {
+            footerLogo.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Add cursor pointer
+            footerLogo.style.cursor = 'pointer';
+        }
+
+        // System status click handler
+        const systemStatus = document.querySelector('.status-indicator');
+        if (systemStatus) {
+            systemStatus.parentElement.parentElement.addEventListener('click', function() {
+                alert('ระบบทำงานปกติ\n- เซิร์ฟเวอร์: ออนไลน์\n- ฐานข้อมูล: เชื่อมต่อ\n- เวลาตอบสนอง: < 200ms');
+            });
+            systemStatus.parentElement.parentElement.style.cursor = 'pointer';
+        }
+
+        // Social links analytics (optional)
+        const socialLinks = document.querySelectorAll('.social-link');
+        socialLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const platform = this.title;
+                console.log(`Clicked on ${platform} social link`);
+                
+                // In real implementation, you'd navigate to actual social media pages
+                alert(`เปิดหน้า ${platform} ของ IT KMITL`);
+            });
+        });
+
+        // Footer links click handlers
+        const footerLinks = document.querySelectorAll('footer a:not(.social-link)');
+        footerLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const linkText = this.textContent.trim();
+                console.log(`Clicked footer link: ${linkText}`);
+                
+                // Handle different footer links
+                switch(linkText) {
+                    case 'หน้าแรกระบบ':
+                        alert('กำลังไปหน้าแรกระบบ');
+                        break;
+                    case 'คู่มือการใช้งาน':
+                        alert('กำลังเปิดคู่มือการใช้งาน');
+                        break;
+                    case 'รายงานปัญหา':
+                        alert('กำลังเปิดฟอร์มรายงานปัญหา');
+                        break;
+                    case 'ความช่วยเหลือ':
+                        alert('กำลังเปิดศูนย์ช่วยเหลือ');
+                        break;
+                    case 'ประกาศการบำรุงรักษา':
+                        alert('ไม่มีการบำรุงรักษาในขณะนี้');
+                        break;
+                    case 'นโยบายความเป็นส่วนตัว':
+                        alert('กำลังเปิดนโยบายความเป็นส่วนตัว');
+                        break;
+                    case 'เงื่อนไขการใช้งาน':
+                        alert('กำลังเปิดเงื่อนไขการใช้งาน');
+                        break;
+                    default:
+                        console.log(`Unknown footer link: ${linkText}`);
+                }
+            });
+        });
+
+        // ===== PERFORMANCE MONITORING =====
+        // Monitor page load performance
+        window.addEventListener('load', function() {
+            if ('performance' in window) {
+                const loadTime = performance.now();
+                console.log(`Page loaded in ${Math.round(loadTime)}ms`);
+                
+                // Report performance metrics (in real app)
+                if (loadTime > 3000) {
+                    console.warn('Page load time is slow:', loadTime + 'ms');
+                }
+            }
+        });
+
+        // ===== ACCESSIBILITY ENHANCEMENTS =====
+        // Add skip to main content link for screen readers
+        const skipLink = document.createElement('a');
+        skipLink.href = '#main-content';
+        skipLink.textContent = 'ข้ามไปเนื้อหาหลัก';
+        skipLink.className = 'sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:text-slate-900 focus:rounded-md focus:shadow-lg';
+        document.body.insertBefore(skipLink, document.body.firstChild);
+
+        // Add main content id
+        const mainContent = document.querySelector('main');
+        if (mainContent) {
+            mainContent.id = 'main-content';
+        }
+
+        // Enhanced focus management
+        document.addEventListener('keydown', function(e) {
+            // Tab navigation enhancements
+            if (e.key === 'Tab') {
+                // Add visible focus indicators
+                document.body.classList.add('keyboard-navigation');
+            }
+        });
+
+        document.addEventListener('mousedown', function() {
+            document.body.classList.remove('keyboard-navigation');
+        });
+
+        // ===== ERROR HANDLING =====
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.error);
+            // In production, you'd send this to your error tracking service
+        });
+
+        // ===== INITIALIZATION COMPLETE =====
+        console.log('🎉 IT KMITL Schedule System initialized successfully!');
+        console.log('📱 Responsive design active');
+        console.log('⚡ Performance optimizations enabled');
+        console.log('♿ Accessibility features loaded');
+        console.log('🎨 KMITL Design System applied');
+    </script>
+</body>
+</html>

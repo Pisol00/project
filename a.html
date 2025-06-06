@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการวสอน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'thai': ['Inter', 'Noto Sans Thai', 'sans-serif']
+                    },
+                    animation: {
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', 'Noto Sans Thai', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+        
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .animate-slide-up {
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+        
+        @keyframes modalSlideIn {
+            from { 
+                opacity: 0; 
+                transform: scale(0.9) translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1) translateY(0); 
+            }
+        }
+
+        .status-dot {
+            position: relative;
+        }
+        
+        .status-dot.active::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: inherit;
+            animation: ping 2s infinite;
+        }
+    </style>
+</head>
+    <body class="bg-gradient-to-br from-slate-50 to-slate-100">
+    <!-- Clean Header -->
+    <header class="bg-white border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gray-900 text-white w-9 h-9 rounded-lg flex items-center justify-center font-semibold text-sm">
+                        IT
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-semibold text-gray-900">ระบบจัดการวสอน</h1>
+                        <p class="text-xs text-gray-500">Course Management System</p>
+                    </div>
+                </div>
+                
+                <nav class="hidden md:flex space-x-1">
+                    <a href="#" class="bg-gray-50 text-gray-900 px-4 py-2 rounded-lg text-sm font-medium">หน้าหลัก</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">รายวิชา</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">ระบบงาน</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">รายงาน</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-900 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors">ตั้งค่า</a>
+                </nav>
+                
+                <div class="flex items-center space-x-3">
+                    <button class="w-9 h-9 bg-gray-50 hover:bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5-5 5-5"></path>
+                        </svg>
+                    </button>
+                    <div class="w-9 h-9 bg-gray-200 rounded-lg"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <!-- Title Section -->
+        <div class="text-center mb-12 animate-fade-in">
+            <div class="inline-flex items-center space-x-2 bg-green-50 px-3 py-1 rounded-full text-green-700 text-sm mb-6">
+                <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span>ระบบพร้อมใช้งาน</span>
+            </div>
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">ระบบจัดการวสอน</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+                เลือกโปรแกรมการจัดการสอนตามภาคการศึกษาและปีการศึกษา
+            </p>
+        </div>
+
+        <!-- Search and Controls -->
+        <div class="mb-12 animate-slide-up space-y-6">
+            <!-- Search Bar - Centered -->
+            <div class="flex justify-center">
+                <div class="relative w-full max-w-2xl">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <input type="text" id="searchInput" 
+                           placeholder="ค้นหาจากภาคการเรียน ปีการศึกษา หรือข้อมูลโปรดดู..."
+                           class="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-gray-900 focus:border-transparent bg-white shadow-sm">
+                </div>
+            </div>
+
+            <!-- Count and Controls -->
+            <div class="flex items-center justify-between">
+                <span id="projectCount" class="text-gray-600 text-sm font-medium">7 โปรเจค</span>
+                
+                <!-- Minimal Grid/List Toggle -->
+                <div class="relative bg-gray-100 rounded-lg p-1">
+                    <div id="toggleSlider" class="absolute top-1 left-1 w-16 h-8 bg-white rounded-md shadow-sm transition-transform duration-300 ease-in-out"></div>
+                    <div class="relative flex">
+                        <button id="gridView" class="w-16 h-8 flex items-center justify-center text-sm font-medium transition-colors duration-300 relative z-10 text-gray-900">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                            </svg>
+                        </button>
+                        <button id="listView" class="w-16 h-8 flex items-center justify-center text-sm font-medium transition-colors duration-300 relative z-10 text-gray-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Grid -->
+        <div id="courseGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <!-- Create New Project Card -->
+            <div class="card-hover bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 hover:border-blue-200 rounded-2xl p-8 shadow-sm transition-all duration-300 group" id="createNewCard">
+                <div class="flex flex-col items-center justify-center h-full min-h-[280px] text-center">
+                    <div class="w-16 h-16 bg-blue-100 group-hover:bg-blue-200 rounded-2xl flex items-center justify-center mb-6 transition-colors">
+                        <svg class="w-8 h-8 text-blue-600 group-hover:text-blue-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-3">
+                        สร้างโปรเจคใหม่
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-6 max-w-xs">
+                        เริ่มต้นการจัดการสอนสำหรับภาคการศึกษาใหม่
+                    </p>
+                    <div class="bg-blue-100 group-hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        คลิกเพื่อเริ่มต้น
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semester 1/2567 -->
+            <div class="card-hover bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-100 rounded-2xl p-8 shadow-sm transition-all duration-300">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <div class="w-2 h-2 bg-emerald-500 rounded-full status-dot active"></div>
+                            <span class="text-emerald-600 text-xs font-semibold uppercase tracking-wide">กำลังดำเนินการ</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Semester 1/2567</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            จัดการสอนครึ่งปีแรกปีการศึกษา 2567 ก่อนภาคการศึกษาปกติของสำนักงาน
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-emerald-100">
+                        <div class="text-3xl font-bold text-gray-900 mb-1">156</div>
+                        <div class="text-gray-600 text-sm">จำนวนวิชา</div>
+                        <div class="text-emerald-600 text-xs mt-1">+12 จากเดือนที่แล้ว</div>
+                    </div>
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-emerald-100">
+                        <div class="text-3xl font-bold text-gray-900 mb-1">45</div>
+                        <div class="text-gray-600 text-sm">รายการ</div>
+                        <div class="text-blue-600 text-xs mt-1">อัปเดตวันนี้</div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex justify-between text-sm mb-3">
+                        <span class="text-gray-700 font-medium">ความคืบหน้า</span>
+                        <span class="text-gray-900 font-bold">75%</span>
+                    </div>
+                    <div class="w-full bg-emerald-100 rounded-full h-2">
+                        <div class="progress-bar bg-gradient-to-r from-emerald-500 to-green-500 h-2 rounded-full" style="width: 75%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500 mt-2">
+                        <span>เริ่มต้น</span>
+                        <span>เป้าหมาย 85%</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-emerald-100">
+                    <div class="text-xs text-gray-500">
+                        อัปเดตล่าสุด: 15 ธ.ค. 2567
+                    </div>
+                    <button class="text-xs text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-3 py-1 rounded-lg transition-colors">
+                        ดูรายละเอียด
+                    </button>
+                </div>
+            </div>
+
+            <!-- Semester 2/2566 -->
+            <div class="card-hover bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-100 rounded-2xl p-8 shadow-sm transition-all duration-300">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <span class="text-blue-600 text-xs font-semibold uppercase tracking-wide">เสร็จสิ้น</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Semester 2/2566</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            จัดการสอนครึ่งปีหลังปีการศึกษา 2566 ภาคการศึกษาที่สองระบบแสดงข้อมูลหลายอย่าง
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-blue-100">
+                        <div class="text-3xl font-bold text-gray-900 mb-1">142</div>
+                        <div class="text-gray-600 text-sm">จำนวนวิชา</div>
+                        <div class="text-blue-600 text-xs mt-1">เสร็จสิ้นแล้ว</div>
+                    </div>
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-blue-100">
+                        <div class="text-3xl font-bold text-gray-900 mb-1">42</div>
+                        <div class="text-gray-600 text-sm">รายการ</div>
+                        <div class="text-blue-600 text-xs mt-1">ครบถ้วน</div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex justify-between text-sm mb-3">
+                        <span class="text-gray-700 font-medium">ความคืบหน้า</span>
+                        <span class="text-gray-900 font-bold">100%</span>
+                    </div>
+                    <div class="w-full bg-blue-100 rounded-full h-2">
+                        <div class="progress-bar bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full" style="width: 100%"></div>
+                    </div>
+                    <div class="flex justify-center text-xs text-gray-500 mt-2">
+                        <span>🎉 เสร็จสิ้นสมบูรณ์</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-blue-100">
+                    <div class="text-xs text-gray-500">
+                        เสร็จสิ้น: 20 มิ.ย. 2567
+                    </div>
+                    <button class="text-xs text-blue-700 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-lg transition-colors">
+                        ดูสรุป
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summer 2566 -->
+            <div class="card-hover bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 rounded-2xl p-8 shadow-sm transition-all duration-300">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <div class="w-2 h-2 bg-amber-500 rounded-full"></div>
+                            <span class="text-amber-600 text-xs font-semibold uppercase tracking-wide">เสร็จสิ้น</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Summer 2566</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            จัดการสอนภาคฤดูร้อน ปีการศึกษา 2566 สำหรับการเรียนภาคฤดูร้อนระบบการจัดการ
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-amber-100">
+                        <div class="text-3xl font-bold text-gray-900 mb-1">48</div>
+                        <div class="text-gray-600 text-sm">จำนวนวิชา</div>
+                        <div class="text-amber-600 text-xs mt-1">ภาคฤดูร้อน</div>
+                    </div>
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-amber-100">
+                        <div class="text-3xl font-bold text-gray-900 mb-1">28</div>
+                        <div class="text-gray-600 text-sm">รายการ</div>
+                        <div class="text-amber-600 text-xs mt-1">เข้มข้น</div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex justify-between text-sm mb-3">
+                        <span class="text-gray-700 font-medium">ความคืบหน้า</span>
+                        <span class="text-gray-900 font-bold">100%</span>
+                    </div>
+                    <div class="w-full bg-amber-100 rounded-full h-2">
+                        <div class="progress-bar bg-gradient-to-r from-amber-500 to-orange-500 h-2 rounded-full" style="width: 100%"></div>
+                    </div>
+                    <div class="flex justify-center text-xs text-gray-500 mt-2">
+                        <span>☀️ ภาคฤดูร้อนสำเร็จ</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-amber-100">
+                    <div class="text-xs text-gray-500">
+                        เสร็จสิ้น: 15 ส.ค. 2566
+                    </div>
+                    <button class="text-xs text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 px-3 py-1 rounded-lg transition-colors">
+                        ดูสรุป
+                    </button>
+                </div>
+            </div>
+
+            <!-- Semester 1/2566 -->
+            <div class="card-hover bg-gradient-to-br from-slate-50 to-gray-50 border border-slate-200 rounded-2xl p-8 shadow-sm transition-all duration-300">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <div class="w-2 h-2 bg-slate-400 rounded-full"></div>
+                            <span class="text-slate-600 text-xs font-semibold uppercase tracking-wide">เก็บถาวร</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Semester 1/2566</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            จัดการสอนครึ่งปีแรกปีการศึกษา 2566 ภาคการศึกษาที่หนึ่งของปีการศึกษาป็งการเรียน
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-slate-200">
+                        <div class="text-3xl font-bold text-gray-900 mb-1">148</div>
+                        <div class="text-gray-600 text-sm">จำนวนวิชา</div>
+                        <div class="text-slate-600 text-xs mt-1">เก็บถาวรแล้ว</div>
+                    </div>
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-slate-200">
+                        <div class="text-3xl font-bold text-gray-900 mb-1">40</div>
+                        <div class="text-gray-600 text-sm">รายการ</div>
+                        <div class="text-slate-600 text-xs mt-1">สำรอง</div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex justify-between text-sm mb-3">
+                        <span class="text-gray-700 font-medium">สถานะ</span>
+                        <span class="text-gray-900 font-bold">เก็บถาวร</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div class="progress-bar bg-gradient-to-r from-slate-400 to-gray-400 h-2 rounded-full" style="width: 100%"></div>
+                    </div>
+                    <div class="flex justify-center text-xs text-gray-500 mt-2">
+                        <span>📁 ข้อมูลปลอดภัย</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-slate-200">
+                    <div class="text-xs text-gray-500">
+                        เก็บถาวร: 25 ม.ค. 2567
+                    </div>
+                    <button class="text-xs text-slate-700 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 px-3 py-1 rounded-lg transition-colors">
+                        ดูข้อมูล
+                    </button>
+                </div>
+            </div>
+
+            <!-- Semester 2/2567 -->
+            <div class="card-hover bg-gradient-to-br from-rose-50 to-pink-50 border border-rose-100 rounded-2xl p-8 shadow-sm transition-all duration-300">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <div class="w-2 h-2 bg-rose-500 rounded-full status-dot active"></div>
+                            <span class="text-rose-600 text-xs font-semibold uppercase tracking-wide">เริ่มต้น</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Semester 2/2567</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            จัดการสอนครึ่งปีหลังปีการศึกษา 2567 ระบบไฟติดตามการทำงานอย่างมีประสิทธิภาพ
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-rose-100">
+                        <div class="text-3xl font-bold text-gray-900 mb-1">165</div>
+                        <div class="text-gray-600 text-sm">จำนวนวิชา</div>
+                        <div class="text-rose-600 text-xs mt-1">วางแผนแล้ว</div>
+                    </div>
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-rose-100">
+                        <div class="text-3xl font-bold text-gray-900 mb-1">48</div>
+                        <div class="text-gray-600 text-sm">รายการ</div>
+                        <div class="text-rose-600 text-xs mt-1">เพิ่มขึ้น</div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex justify-between text-sm mb-3">
+                        <span class="text-gray-700 font-medium">ความคืบหน้า</span>
+                        <span class="text-gray-900 font-bold">35%</span>
+                    </div>
+                    <div class="w-full bg-rose-100 rounded-full h-2">
+                        <div class="progress-bar bg-gradient-to-r from-rose-500 to-pink-500 h-2 rounded-full" style="width: 35%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500 mt-2">
+                        <span>เริ่มต้น</span>
+                        <span>เป้าหมาย 100%</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-rose-100">
+                    <div class="text-xs text-gray-500">
+                        อัปเดตล่าสุด: 14 ม.ค. 2568
+                    </div>
+                    <button class="text-xs text-rose-700 hover:text-rose-800 bg-rose-50 hover:bg-rose-100 px-3 py-1 rounded-lg transition-colors">
+                        เริ่มต้น
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summer 2567 -->
+            <div class="card-hover bg-gradient-to-br from-sky-50 to-blue-50 border border-sky-100 rounded-2xl p-8 shadow-sm transition-all duration-300">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <div class="w-2 h-2 bg-sky-500 rounded-full status-dot active"></div>
+                            <span class="text-sky-600 text-xs font-semibold uppercase tracking-wide">วางแผน</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-3">Summer 2567</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            จัดการสอนภาคฤดูร้อน ปีการศึกษา 2567 การใเียนภาคฤดูร้อนการศึกษาแขบสำรองหลายอย่าง
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-sky-100">
+                        <div class="text-3xl font-bold text-gray-900 mb-1">52</div>
+                        <div class="text-gray-600 text-sm">จำนวนวิชา</div>
+                        <div class="text-sky-600 text-xs mt-1">ประมาณการ</div>
+                    </div>
+                    <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 text-center border border-sky-100">
+                        <div class="text-3xl font-bold text-gray-900 mb-1">30</div>
+                        <div class="text-gray-600 text-sm">รายการ</div>
+                        <div class="text-sky-600 text-xs mt-1">ร่าง</div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex justify-between text-sm mb-3">
+                        <span class="text-gray-700 font-medium">ความคืบหน้า</span>
+                        <span class="text-gray-900 font-bold">10%</span>
+                    </div>
+                    <div class="w-full bg-sky-100 rounded-full h-2">
+                        <div class="progress-bar bg-gradient-to-r from-sky-500 to-blue-500 h-2 rounded-full" style="width: 10%"></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-500 mt-2">
+                        <span>วางแผน</span>
+                        <span>เริ่ม มิ.ย. 2568</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-4 border-t border-sky-100">
+                    <div class="text-xs text-gray-500">
+                        วางแผน: 5 ม.ค. 2568
+                    </div>
+                    <button class="text-xs text-sky-700 hover:text-sky-800 bg-sky-50 hover:bg-sky-100 px-3 py-1 rounded-lg transition-colors">
+                        วางแผน
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Course Details Modal -->
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div id="modalHeader" class="bg-gray-900 text-white p-6 rounded-t-2xl">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 id="modalTitle" class="text-3xl font-bold mb-2">Semester 1/2567</h2>
+                        <p id="modalSubtitle" class="text-gray-300">จัดการสอนครึ่งปีแรกปีการศึกษา 2567</p>
+                    </div>
+                    <button id="closeModal" class="text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-10 h-10 rounded-lg flex items-center justify-center transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6">
+                <!-- Summary Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-100">
+                        <div id="modalCourses" class="text-3xl font-bold text-gray-900 mb-1">156</div>
+                        <div class="text-gray-600 text-sm">จำนวนวิชา</div>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-100">
+                        <div id="modalItems" class="text-3xl font-bold text-gray-900 mb-1">45</div>
+                        <div class="text-gray-600 text-sm">รายการ</div>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-100">
+                        <div id="modalStudents" class="text-3xl font-bold text-gray-900 mb-1">2,847</div>
+                        <div class="text-gray-600 text-sm">นักศึกษา</div>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-4 text-center border border-gray-100">
+                        <div id="modalInstructors" class="text-3xl font-bold text-gray-900 mb-1">89</div>
+                        <div class="text-gray-600 text-sm">อาจารย์</div>
+                    </div>
+                </div>
+
+                <!-- Progress Section -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">ความคืบหน้าโดยรวม</h3>
+                    <div class="bg-gray-50 rounded-xl p-6 border border-gray-100">
+                        <div class="flex justify-between text-sm mb-3">
+                            <span class="text-gray-700 font-medium">ความคืบหน้า</span>
+                            <span id="modalProgress" class="text-gray-900 font-bold">75%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3 mb-4">
+                            <div id="modalProgressBar" class="bg-gray-900 h-3 rounded-full" style="width: 75%"></div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <div class="text-lg font-semibold text-green-600">120</div>
+                                <div class="text-xs text-gray-600">เสร็จสิ้น</div>
+                            </div>
+                            <div>
+                                <div class="text-lg font-semibold text-yellow-600">25</div>
+                                <div class="text-xs text-gray-600">กำลังดำเนินการ</div>
+                            </div>
+                            <div>
+                                <div class="text-lg font-semibold text-gray-600">11</div>
+                                <div class="text-xs text-gray-600">รอดำเนินการ</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course List Sample -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">รายวิชาล่าสุด</h3>
+                    <div class="space-y-3">
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between">
+                            <div>
+                                <div class="font-semibold text-gray-900">CS101 - Introduction to Computer Science</div>
+                                <div class="text-sm text-gray-600">Section 1 • 45 นักศึกษา • อ.สมชาย ใจดี</div>
+                            </div>
+                            <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">เสร็จสิ้น</span>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between">
+                            <div>
+                                <div class="font-semibold text-gray-900">CS201 - Data Structures and Algorithms</div>
+                                <div class="text-sm text-gray-600">Section 2 • 38 นักศึกษา • อ.วิไลลักษณ์ ศรีสุข</div>
+                            </div>
+                            <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">กำลังดำเนินการ</span>
+                        </div>
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between">
+                            <div>
+                                <div class="font-semibold text-gray-900">CS301 - Database Systems</div>
+                                <div class="text-sm text-gray-600">Section 1 • 42 นักศึกษา • อ.ธนพล รักดี</div>
+                            </div>
+                            <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-medium">รอดำเนินการ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3 pt-4 border-t border-gray-200">
+                    <button class="flex-1 bg-gray-900 hover:bg-gray-800 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+                        เข้าสู่ระบบจัดการ
+                    </button>
+                    <button class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-lg font-medium transition-colors">
+                        ดาวน์โหลดรายงาน
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create New Project Modal -->
+    <div id="createProjectModal" class="modal">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="bg-gray-900 text-white p-6 rounded-t-2xl">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2">สร้างโปรเจคใหม่</h2>
+                        <p class="text-gray-300">เริ่มต้นการจัดการสอนสำหรับภาคการศึกษาใหม่</p>
+                    </div>
+                    <button id="closeCreateModal" class="text-gray-400 hover:text-white bg-white/10 hover:bg-white/20 w-10 h-10 rounded-lg flex items-center justify-center transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6">
+                <form id="createProjectForm" class="space-y-6">
+                    <!-- Project Type -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">ประเภทโปรเจค</label>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="projectType" value="semester" class="sr-only peer">
+                                <div class="bg-white border-2 border-gray-200 peer-checked:border-gray-900 peer-checked:bg-gray-50 rounded-xl p-4 text-center transition-all">
+                                    <div class="text-2xl mb-2">📚</div>
+                                    <div class="font-medium text-gray-900">Semester</div>
+                                    <div class="text-xs text-gray-600">ภาคการศึกษาปกติ</div>
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="projectType" value="summer" class="sr-only peer">
+                                <div class="bg-white border-2 border-gray-200 peer-checked:border-gray-900 peer-checked:bg-gray-50 rounded-xl p-4 text-center transition-all">
+                                    <div class="text-2xl mb-2">☀️</div>
+                                    <div class="font-medium text-gray-900">Summer</div>
+                                    <div class="text-xs text-gray-600">ภาคฤดูร้อน</div>
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="projectType" value="special" class="sr-only peer">
+                                <div class="bg-white border-2 border-gray-200 peer-checked:border-gray-900 peer-checked:bg-gray-50 rounded-xl p-4 text-center transition-all">
+                                    <div class="text-2xl mb-2">⭐</div>
+                                    <div class="font-medium text-gray-900">Special</div>
+                                    <div class="text-xs text-gray-600">ภาคพิเศษ</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Project Details -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">ปีการศึกษา</label>
+                            <select class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent">
+                                <option value="">เลือกปีการศึกษา</option>
+                                <option value="2567">2567</option>
+                                <option value="2568">2568</option>
+                                <option value="2569">2569</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">ภาคการศึกษา</label>
+                            <select class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent">
+                                <option value="">เลือกภาคการศึกษา</option>
+                                <option value="1">ภาคการศึกษาที่ 1</option>
+                                <option value="2">ภาคการศึกษาที่ 2</option>
+                                <option value="summer">ภาคฤดูร้อน</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Project Name -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">ชื่อโปรเจค</label>
+                        <input type="text" placeholder="เช่น Semester 1/2568" class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent">
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">คำอธิบาย</label>
+                        <textarea rows="3" placeholder="คำอธิบายเพิ่มเติมเกี่ยวกับโปรเจคนี้..." class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-gray-900 focus:border-transparent"></textarea>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-3 pt-6 border-t border-gray-200">
+                        <button type="button" id="cancelCreate" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-lg font-medium transition-colors">
+                            ยกเลิก
+                        </button>
+                        <button type="submit" class="flex-1 bg-gray-900 hover:bg-gray-800 text-white py-3 px-4 rounded-lg font-medium transition-colors">
+                            สร้างโปรเจค
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // View toggle functionality with slider
+        const gridView = document.getElementById('gridView');
+        const listView = document.getElementById('listView');
+        const toggleSlider = document.getElementById('toggleSlider');
+
+        gridView.addEventListener('click', () => {
+            toggleSlider.style.transform = 'translateX(0)';
+            gridView.classList.remove('text-gray-500');
+            gridView.classList.add('text-gray-900');
+            listView.classList.remove('text-gray-900');
+            listView.classList.add('text-gray-500');
+        });
+
+        listView.addEventListener('click', () => {
+            toggleSlider.style.transform = 'translateX(64px)';
+            listView.classList.remove('text-gray-500');
+            listView.classList.add('text-gray-900');
+            gridView.classList.remove('text-gray-900');
+            gridView.classList.add('text-gray-500');
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('courseModal');
+        const createModal = document.getElementById('createProjectModal');
+        const closeModal = document.getElementById('closeModal');
+        const closeCreateModal = document.getElementById('closeCreateModal');
+        const createNewCard = document.getElementById('createNewCard');
+        const cancelCreate = document.getElementById('cancelCreate');
+        const cards = document.querySelectorAll('.card-hover:not(#createNewCard)');
+
+        // Open create project modal
+        createNewCard.addEventListener('click', () => {
+            createModal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        });
+
+        // Close create project modal
+        closeCreateModal.addEventListener('click', () => {
+            createModal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        });
+
+        cancelCreate.addEventListener('click', () => {
+            createModal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Handle create project form submission
+        document.getElementById('createProjectForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('โปรเจคถูกสร้างเรียบร้อยแล้ว!');
+            createModal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+            e.target.reset();
+        });
+
+        // Course data for modal
+        const courseData = {
+            'Semester 1/2567': {
+                title: 'Semester 1/2567',
+                subtitle: 'จัดการสอนครึ่งปีแรกปีการศึกษา 2567',
+                courses: 156,
+                items: 45,
+                students: 2847,
+                instructors: 89,
+                progress: 75
+            },
+            'Semester 2/2566': {
+                title: 'Semester 2/2566',
+                subtitle: 'จัดการสอนครึ่งปีหลังปีการศึกษา 2566',
+                courses: 142,
+                items: 42,
+                students: 2634,
+                instructors: 78,
+                progress: 100
+            },
+            'Summer 2566': {
+                title: 'Summer 2566',
+                subtitle: 'จัดการสอนภาคฤดูร้อน ปีการศึกษา 2566',
+                courses: 48,
+                items: 28,
+                students: 892,
+                instructors: 34,
+                progress: 100
+            },
+            'Semester 1/2566': {
+                title: 'Semester 1/2566',
+                subtitle: 'จัดการสอนครึ่งปีแรกปีการศึกษา 2566',
+                courses: 148,
+                items: 40,
+                students: 2756,
+                instructors: 82,
+                progress: 100
+            },
+            'Semester 2/2567': {
+                title: 'Semester 2/2567',
+                subtitle: 'จัดการสอนครึ่งปีหลังปีการศึกษา 2567',
+                courses: 165,
+                items: 48,
+                students: 3102,
+                instructors: 95,
+                progress: 35
+            },
+            'Summer 2567': {
+                title: 'Summer 2567',
+                subtitle: 'จัดการสอนภาคฤดูร้อน ปีการศึกษา 2567',
+                courses: 52,
+                items: 30,
+                students: 1245,
+                instructors: 28,
+                progress: 10
+            }
+        };
+
+        // Open modal when card is clicked
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                const cardTitle = card.querySelector('h3').textContent;
+                const data = courseData[cardTitle];
+                
+                if (data) {
+                    document.getElementById('modalTitle').textContent = data.title;
+                    document.getElementById('modalSubtitle').textContent = data.subtitle;
+                    document.getElementById('modalCourses').textContent = data.courses;
+                    document.getElementById('modalItems').textContent = data.items;
+                    document.getElementById('modalStudents').textContent = data.students.toLocaleString();
+                    document.getElementById('modalInstructors').textContent = data.instructors;
+                    document.getElementById('modalProgress').textContent = data.progress + '%';
+                    
+                    const progressBar = document.getElementById('modalProgressBar');
+                    progressBar.style.width = data.progress + '%';
+                    
+                    modal.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        });
+
+        // Close modal
+        closeModal.addEventListener('click', () => {
+            modal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close modal when clicking outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        createModal.addEventListener('click', (e) => {
+            if (e.target === createModal) {
+                createModal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Close modal with ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (modal.classList.contains('show')) {
+                    modal.classList.remove('show');
+                    document.body.style.overflow = 'auto';
+                }
+                if (createModal.classList.contains('show')) {
+                    createModal.classList.remove('show');
+                    document.body.style.overflow = 'auto';
+                }
+            }
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const searchableCards = document.querySelectorAll('.card-hover:not(#createNewCard)');
+            
+            searchableCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const description = card.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.parentElement.style.display = 'block';
+                } else {
+                    card.parentElement.style.display = 'none';
+                }
+            });
+        });
+
+        // Progress bar animations
+        window.addEventListener('load', () => {
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach((bar, index) => {
+                setTimeout(() => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>
